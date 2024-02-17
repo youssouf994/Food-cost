@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body class="body">
+    <!--<div id="login_div" class="popup">
+        <div class="log">
+            <p>{{msg}}</p>
+            <form action="{{ url_for('accesso') }}" method="post" class="login">
+                <img src="#" class="little" /><br>
+                <label for="login1" class="etichette"><b>nome utente</b><input type="text" name="user" class="credenziali1" maxlength="255"></label><br>
+                <label for="login2" class="etichette"><b>Password</b><input type="password" name="pass" class="credenziali1" maxlength="255"></label><br>
+                <button type="submit">Login</button><br />
+            </form>
+            <button id="chiudi_div">Chiudi</button>
+        </div>
+    </div>-->
+
+    <div id="login_div2" class="popup">
+        <div class="log2">
+            <form method="post" class="data_view" action="{{ url_for('crea_utente') }}">
+                <h2 class="titoli">Registrazione Cliente</h2>
+
+                <div class="colore">
+                    <label>Nome</label>
+                    <input type="text" name="nome" required>
+                </div>
+
+                <div class="colore">
+                    <label>Cognome</label>
+                    <input type="text" name="cognome" required>
+                </div>
+
+
+                <div class="colore">
+                    <label>Password</label>
+                    <input type="password" name="pass" required>
+                </div>
+
+                <div class="colore">
+                    <label>Mail</label>
+                    <input type="email" name="mail" required>
+                </div>
+
+                <div class="colore">
+                    <label>Azienda'</label>
+                    <input type="text" name="azienda" required>
+                </div>
+
+
+
+                <div>
+                    <button class="bottone_generic" type="submit">Avvia<br>registrazione</button>
+                    <button class="bottone_generic" type="reset">Cancella</button>
+                </div>
+
+            </form>
+            <button id="chiudi_div2">Chiudi</button>
+        </div>
+    </div>
+
+    
+</body>

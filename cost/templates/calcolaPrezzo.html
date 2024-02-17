@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Calcola Food Cost</title>
+   
+</head>
+<body>
+    <h1>Nuovo piatto</h1>
+    <form action="{{('/nuovoPiatto')}}" method="post">
+        <label for="nomePiatto">Inserisci nuovo piatto</label>
+        <input type="text" id="nomePiatto" name="nomePiatto">
+        <input type="submit" value="Nuovo Piatto">
+    </form>
+
+
+    
+
+    {% for piatto in piattiUtente %}
+    <div class="">
+        <p>Nome Piatto: {{piatto.getNome()}}</p>
+        <input type="hidden" name="nomeP" value="{{piatto.getNome()}}" />
+
+
+
+
+        <form action="{{('/nuovoIngrediente')}}" method="post">
+            <input type="hidden" name="nomeP" value="{{piatto.getNome()}}" />
+            <label for="nomeAlimento">Alimento</label>
+            <input type="text" id="nomeAlimento" name="nomeAlimento">
+            <br>
+
+            <label for="prezzoAlKg">Prezzo al Kg</label>
+            <input type="text" id="prezzoAlKg" name="prezzoAlKg">
+            <br>
+
+            <label for="quantita">Quantita inserita</label>
+            <input type="text" id="quantita" name="quantita">
+            <br>
+
+            <input type="submit" value="aggiungi">
+            <input type="reset" value="resetta campi">
+        </form>
+
+        {% for ingrediente in piatto.getDizionario() %}
+        <ul>
+            <li>Ingrediente {{ingrediente.Nome}}, Prezzo al Kg: {{ingrediente.PrezzoKg}}, Quantita: {{ingrediente.Quantita}}, Costo: {{ingrediente.Costo}}</li>
+        </ul>
+        {% endfor %}
+
+
+        <p>Costo Totale del piatto: {{tot2}}</p>
+
+    </div>
+    {% endfor %}
+
+</body>
+</html>
