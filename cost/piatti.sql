@@ -26,7 +26,7 @@ CREATE TABLE ingredienti
     ingredienteId INTEGER PRIMARY KEY AUTOINCREMENT,
     idUtente INT,
     idPiatto INT,
-    nome VARCHAR(100),
+    nome TEXT,
     prezzoKg DECIMAL (10, 4),
 	quantita DECIMAL (10, 4),
     costo DECIMAL(10, 3)

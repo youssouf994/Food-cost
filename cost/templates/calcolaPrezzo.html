@@ -19,14 +19,18 @@
 
     {% for piatto in piattiUtente %}
     <div class="">
-        <p>Nome Piatto: {{piatto.getNome()}}</p>
-        <input type="hidden" name="nomeP" value="{{piatto.getNome()}}" />
+        <p>Nome Piatto: {{piatto[2]}}</p>
+        <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
 
+        <form action="{{('/cancellaX')}}" method="post">
+            <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+            <input type="submit" value="Cancella PIatto" />
+        </form>
 
 
 
         <form action="{{('/nuovoIngrediente')}}" method="post">
-            <input type="hidden" name="nomeP" value="{{piatto.getNome()}}" />
+            <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
             <label for="nomeAlimento">Alimento</label>
             <input type="text" id="nomeAlimento" name="nomeAlimento">
             <br>
@@ -43,14 +47,29 @@
             <input type="reset" value="resetta campi">
         </form>
 
-        {% for ingrediente in piatto.getDizionario() %}
+        
         <ul>
-            <li>Ingrediente {{ingrediente.Nome}}, Prezzo al Kg: {{ingrediente.PrezzoKg}}, Quantita: {{ingrediente.Quantita}}, Costo: {{ingrediente.Costo}}</li>
+            {% for ingredientiUtente in ingredientiUtente %}
+
+                {% if piatto[0]== ingredientiUtente[2] %}
+            <li>
+                Ingrediente {{ingredientiUtente[3]}}<br />
+                Prezzo al Kg: {{ingredientiUtente[4]}}<br />
+                Quantita: {{ingredientiUtente[5]}}<br />
+                Costo: {{ingredientiUtente[6]}}
+
+                <form action="{{('/cancellaXy')}}" method="post">
+                    <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
+                    <input type="submit" value="Cancella Ingrediente" />
+                </form>
+            </li>
+                {% endif %}
+
+            {% endfor %}
         </ul>
-        {% endfor %}
 
 
-        <p>Costo Totale del piatto: {{tot2}}</p>
+        <p>Costo Totale del piatto: {{piatto[3]}}</p>
 
     </div>
     {% endfor %}

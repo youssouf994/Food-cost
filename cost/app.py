@@ -37,24 +37,32 @@ def login():
 
 @app.route('/calcolaTotale', methods=['POST', 'GET'])
 def calcolaTot():
-    
-    
-    return render_template('calcolaPrezzo.html')
+    db=database.db()
+    #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
+    #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
+
+    piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
+    ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+    db.close()
+    return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente)
 
 
 @app.route('/nuovoPiatto', methods=['POST', 'GET'])
 def nuovoPiatto():
     if request.method=='POST':
         nome=request.form.get('nomePiatto')
-        piatto1=Piatto()
+        
+        """piatto1=Piatto()
         piatto1.setNome(nome)
-        piattiUtente.append(piatto1)
+        piattiUtente.append(piatto1)"""
+
         id=session['userId']
 
         db=database.db()
-        database.aggiungi_piatto(db, 'piatti', id, piatto1.getNome(), 0)
-
-    return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)
+        database.aggiungi_piatto(db, 'piatti', id, nome, 0)
+    
+    return redirect(url_for('calcolaTot'))
+    #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)
 
 @app.route('/calcolaPrezzo', methods=['POST', 'GET'])
 def calcolaPrezzo():
@@ -62,51 +70,72 @@ def calcolaPrezzo():
 
     return render_template('calcolaPrezzo.html')
 
-@app.route('/nuovoIngrediente', methods=['POST'])
+@app.route('/nuovoIngrediente', methods=['POST', 'GET'])
 def aggiungiIngre():
-    nomePiatto=request.form.get('nomeP')
+    nomePiatto=str(request.form.get('nomeP'))
     ingrediente=request.form.get('nomeAlimento')
     prezzoKg=float(request.form.get('prezzoAlKg'))
     quanti=float(request.form.get('quantita'))
     tot=0
+    prezzo=Calcoli.prezzoGrammi(quanti, prezzoKg)
 
     db=database.db()
-    idPiatto=database.idPiatto(db, 'piatti', session['userId'])
-
-    database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto, ingrediente, prezzoKg, quanti, Calcoli.prezzoGrammi(quanti, prezzoKg))
-
-    tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
-    print(tot2)
-
-    for piattoIdenti in piattiUtente:
-        if piattoIdenti.getNome()==nomePiatto:
-            piattoIdenti.aggiungiIngrediente(ingrediente, prezzoKg, quanti)  
-            break 
+    idPiatto=database.idPiatto(db, 'piatti', nomePiatto, session['userId'])
     
-    tot=piattoIdenti.sommaCosti()
+    database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto[0], ingrediente, prezzoKg, quanti, prezzo)
+
+    tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto[0], session['userId'], nomePiatto)
+  
+    #piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
+    #for piattoIdenti in piattiUtente:
+        #if piattoIdenti.getNome()==nomePiatto:
+          #  piattoIdenti.aggiungiIngrediente(ingrediente, prezzoKg, quanti)  
+            #break    
+        #tot=piattoIdenti.sommaCosti()
 
     db.close()
-    return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
+    return redirect(url_for('calcolaTot'))
+    #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
 
 @app.route('/modificaPiatto', methods=['POST'])
 def modificaNomePiatto():
     nome=request.form.get('nomePiatto')
 
-    piatto.setNome(nome)
+    #piatto.setNome(nome)
     
     #da aggiungere modifica specifica ad un solo oggetto dell'array
 
-    for a in piattiUtente:
-        nome.append(piatto.getNome())
+    #for a in piattiUtente:
+    #    nome.append(piatto.getNome())
 
     return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)#UGUALE A AGGIUNGI INGRE
 
 
-@app.route('/visualizza')
-def visualizza():
-    dettagliPiatti=[piatto.getDizionario for piatto in piattiUtente]
 
-    return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)
+@app.route('/cancellaX', methods=['GET', 'POST'])
+def cancellaPiatto():
+    nome=request.form.get('nomeP')
+
+    db=database.db()
+    idPia=database.idPiatto(db, 'piatti', nome, session['userId'])
+
+    database.elimina_rigaPiatto(db, idPia[0], 'piatti')
+
+    db.close()
+    return redirect(url_for('calcolaTot'))
+
+
+@app.route('/cancellaXy', methods=['GET', 'POST'])
+def cancellaIngre():
+    nome=request.form.get('nomeI')
+
+    db=database.db()
+    idIngre=database.idIngre(db, 'ingredienti', nome, session['userId'])
+
+    database.elimina_rigaPiatto(db, idIngre[0], 'ingredienti')
+
+    db.close()
+    return redirect(url_for('calcolaTot'))
 
 
 @app.route('/registrazione', methods=['POST', 'GET']) 

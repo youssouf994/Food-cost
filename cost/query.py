@@ -14,17 +14,21 @@ class database:
 
 
 
-    def visualizza_tutti_piatti():
-        db_ram=db()
-        cursore=db_ram.cursor()
+    def visualizza_tutti_piatti(db, tabella, idUte):
+        cursore=db.cursor()
 
-        cursore.execute(GLOBALEselezionaTuttiPiatti)
-        cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente={idUte}")
-        piatti=cursore.fetchall()
+        #cursore.execute(GLOBALEselezionaTuttiPiatti)
+        if tabella=='piatti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente=?", (idUte,))
+            piatti=cursore.fetchall()
+        elif tabella=='ingredienti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente=?", (idUte,))
+            piatti=cursore.fetchall()
 
-        db_ram.close()
 
         return piatti
+
+    
 
     def visualizza_un_piatto(nome):#passa il nome <hidden> in modo da ingrandire piatto in 1 pagina
         db_ram=db_utenti()
@@ -33,7 +37,7 @@ class database:
         cursore.execute(GLOBALEselezionaSoloUnPiatto)
         piatto=cursore.fetchone()
 
-        db_ram.close()
+        
 
         return piatto
 
@@ -41,33 +45,42 @@ class database:
     #------------------------------------------------------------------------
 
 
-    def elimina_riga(db_ram, id, tabella):
+    def elimina_rigaPiatto(db_ram, id, tabella):
         """la funzione non apre il database perchè verrebbe già aperto dalla funzione
         db_utenti, quindi passo l'oggetto come parametro e lo utilizzo direttamente"""
     
         try:
             cursore=db_ram.cursor()
 
-            cursore.execute(f"DELETE FROM {tabella} WHERE id_service=?", (id,))
-            db_ram.commit()
-        
+            if tabella=='piatti':
+                cursore.execute(f"DELETE FROM {tabella} WHERE piattoId=?", (id,))
+                db_ram.commit()
+                
+  
+            elif tabella=='ingredienti':
+                cursore.execute(f"DELETE FROM {tabella} WHERE ingredienteId=?", (id,))
+                db_ram.commit()
+
             return True
 
         except Exception as e:
-            return render_template("no.html")
+            print(e)
+            return False
 
-        def modifica_elemento(db_ram, id, tabella, colonna, nuovo):
-            try:
-                cursore=db_ram.cursor()
 
-                cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE id_service=?", (nuovo, id))
-                db_ram.commit()
+
+    def modifica_elemento(db_ram, id, tabella, colonna, nuovo):
+        try:
+            cursore=db_ram.cursor()
+
+            cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE id_service=?", (nuovo, id))
+            db_ram.commit()
         
-                a=1
-                return a
+            a=1
+            return a
 
-            except Exception as e:
-                return render_template("no.html")
+        except Exception as e:
+            return render_template("no.html")
 
     #----------------------------------------------------------------------------
 
@@ -78,7 +91,7 @@ class database:
 
             cursore.execute(f"INSERT INTO {tabella} (idUtente, nome, costo) VALUES (?, ?, ?)", (idUte, nome, costo ))
             db_ram.commit()
-            db_ram.close()
+            
 
             return render_template("calcolaPrezzo.html")
 
@@ -92,10 +105,9 @@ class database:
         try:
             cursore = db.cursor()
 
-            cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzoKg, quantita, costo) VALUES (?, ?, ?, ?, ?, ?)", 
-                            (idUtente, idPiatto, nome, prezzoKg, quanti, costo))
+            cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzoKg, quantita, costo) VALUES (?, ?, ?, ?, ?, ?)", (idUtente, idPiatto, nome, prezzoKg, quanti, costo))
             db.commit()
-            cursore.close()
+            
 
             return render_template("calcolaPrezzo.html")
 
@@ -127,12 +139,12 @@ class database:
         return carrello
 
 
-    def idPiatto(db, tabella, userId):
+    def idPiatto(db, tabella, nome, idUte):
         try:
             cursore = db.cursor()
 
-            cursore.execute(f"SELECT * FROM {tabella} WHERE piattoId={userId}")
-            riga = cursore.fetchone()
+            cursore.execute(f"SELECT * FROM {tabella} WHERE nome=? AND idUtente=?", (nome, idUte,))
+            riga = cursore.fetchall()
 
             if riga:
                 idPiatto = riga[0]
@@ -145,14 +157,35 @@ class database:
 
         except Exception as e:
             print("Si è verificato un'errore:", e)
-            db.close()
+
+
+
+    def idIngre(db, tabella, nome, id):
+        try:
+            cursore = db.cursor()
+
+            cursore.execute(f"SELECT * FROM {tabella} WHERE nome=? AND idUtente=?", (nome, id, ))
+            riga = cursore.fetchall()
+
+            if riga:
+                idIngre = riga[0]
+            else:
+                idIngre = None
+
+            
+
+            return idIngre
+
+        except Exception as e:
+            print("Si è verificato un'errore:", e)
+            
 
 
     
-    def sommaCosti_ingredienti(db, tabella, idPiatto, idUte):
+    def sommaCosti_ingredienti(db, tabella, idPiatto, idUte, nome):
         try:
             cursore = db.cursor()
-            cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto={idPiatto} AND idUtente={idUte}")
+            cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto=? AND idUtente=?", (idPiatto, idUte,))
             risultati = cursore.fetchall()
 
             tot = 0
@@ -160,6 +193,8 @@ class database:
                 costo_ingrediente = riga[6]  # sesto elemento della tupla
                 tot += float(costo_ingrediente)
 
+            cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (tot, idPiatto))
+            db.commit()
             return tot
 
         except Exception as e:
