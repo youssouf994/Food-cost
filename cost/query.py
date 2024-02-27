@@ -60,6 +60,7 @@ class database:
             elif tabella=='ingredienti':
                 cursore.execute(f"DELETE FROM {tabella} WHERE ingredienteId=?", (id,))
                 db_ram.commit()
+                cursore.close()
 
             return True
 
@@ -69,19 +70,25 @@ class database:
 
 
 
-    def modifica_elemento(db_ram, id, tabella, colonna, nuovo):
+    def modifica_elemento(db_ram, idUtente, idSpecifico, tabella, colonna, nuovo):
         try:
             cursore=db_ram.cursor()
 
-            cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE id_service=?", (nuovo, id))
-            db_ram.commit()
-        
-            a=1
-            return a
+            if tabella=='piatti':#tabella: piatti, colonna: "nome", nuovo: "", idSpecifi: piattoId
+                cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE piattoId=?", (nuovo, idSpecifico))
+                db_ram.commit()
+            
+            elif tabella=='ingredienti':#tabella: ingredienti, colonna: "quella che vuoi", nuovo: "", idSpecifi: ingredienteId
+               cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE ingredienteId=?", (nuovo, idSpecifico))
+               db_ram.commit() 
+
+            return True
 
         except Exception as e:
-            return render_template("no.html")
+            return False
 
+        finally:
+            cursore.close()
     #----------------------------------------------------------------------------
 
 

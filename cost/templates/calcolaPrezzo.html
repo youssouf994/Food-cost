@@ -6,73 +6,107 @@
     <title>Calcola Food Cost</title>
    
 </head>
-<body>
-    <h1>Nuovo piatto</h1>
-    <form action="{{('/nuovoPiatto')}}" method="post">
-        <label for="nomePiatto">Inserisci nuovo piatto</label>
-        <input type="text" id="nomePiatto" name="nomePiatto">
-        <input type="submit" value="Nuovo Piatto">
-    </form>
-
-
-    
-
-    {% for piatto in piattiUtente %}
-    <div class="">
-        <p>Nome Piatto: {{piatto[2]}}</p>
-        <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
-
-        <form action="{{('/cancellaX')}}" method="post">
-            <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
-            <input type="submit" value="Cancella PIatto" />
+<body class="l1">
+    <div class="fondoForm">
+        <h1>Nuovo piatto</h1>
+        <form action="{{('/nuovoPiatto')}}" method="post">
+            <label for="nomePiatto">Inserisci nuovo piatto</label>
+            <input type="text" id="nomePiatto" name="nomePiatto">
+            <input type="submit" value="Nuovo Piatto">
         </form>
 
+        <p>percentuale costi gestione</p>
+    </div>
 
-
-        <form action="{{('/nuovoIngrediente')}}" method="post">
+    <div class="fondoForm">
+        <h1>Piatti salvati</h1>
+        {% for piatto in piattiUtente %}
+        <div class="piatti" style=" border:solid;">
+            <p>Nome Piatto: {{piatto[2]}}</p>
             <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
-            <label for="nomeAlimento">Alimento</label>
-            <input type="text" id="nomeAlimento" name="nomeAlimento">
-            <br>
 
-            <label for="prezzoAlKg">Prezzo al Kg</label>
-            <input type="text" id="prezzoAlKg" name="prezzoAlKg">
-            <br>
+            <form action="{{('/cancellaX')}}" method="post">
+                <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+                <input type="submit" value="Cancella {{piatto[2]}}" />
+            </form>
 
-            <label for="quantita">Quantita inserita</label>
-            <input type="text" id="quantita" name="quantita">
-            <br>
+            <form action="{{(url_for('modifica', sel=1, idP=piatto[0], selCol=0))}}" method="post">
+                <input type="text" name="nuovo" />
+                <input type="submit" value="Modifica nome piatto" />
+                <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+            </form>
 
-            <input type="submit" value="aggiungi">
-            <input type="reset" value="resetta campi">
-        </form>
+            <form action="{{('/nuovoIngrediente')}}" method="post">
+                <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+                <label for="nomeAlimento">Alimento</label>
+                <input type="text" id="nomeAlimento" name="nomeAlimento">
+                <br>
 
-        
-        <ul>
-            {% for ingredientiUtente in ingredientiUtente %}
+                <label for="prezzoAlKg">Prezzo al Kg</label>
+                <input type="text" id="prezzoAlKg" name="prezzoAlKg">
+                <br>
+
+                <label for="quantita">Quantita inserita</label>
+                <input type="text" id="quantita" name="quantita">
+                <br>
+
+                <input type="submit" value="aggiungi">
+                <input type="reset" value="resetta campi">
+            </form>
+
+
+            <ul>
+                {% for ingredientiUtente in ingredientiUtente %}
 
                 {% if piatto[0]== ingredientiUtente[2] %}
-            <li>
-                Ingrediente {{ingredientiUtente[3]}}<br />
-                Prezzo al Kg: {{ingredientiUtente[4]}}<br />
-                Quantita: {{ingredientiUtente[5]}}<br />
-                Costo: {{ingredientiUtente[6]}}
+                <li>
+                    Ingrediente {{ingredientiUtente[3]}}
+                    <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=0))}}" , method="post">
+                        <label for="ingre">Nuovo</label>
+                        <input type="text" name="ingre" />
+                        <input type="submit" value="Modifica" />
+                    </form>
+                    <br />
 
-                <form action="{{('/cancellaXy')}}" method="post">
-                    <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
-                    <input type="submit" value="Cancella Ingrediente" />
-                </form>
-            </li>
+                    Prezzo al Kg: {{ingredientiUtente[4]}}
+                    <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=1))}}" , method="post">
+                        <label for="ingre">Nuovo</label>
+                        <input type="text" name="ingre" />
+                        <input type="submit" value="Modifica" />
+                    </form>
+                    <br />
+
+                    Quantita: {{ingredientiUtente[5]}}
+                    <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=2))}}" , method="post">
+                        <label for="ingre">Nuovo</label>
+                        <input type="text" name="ingre" />
+                        <input type="submit" value="Modifica" />
+                    </form>
+                    <br />
+
+                    Costo: {{ingredientiUtente[6]}}
+                    <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=3))}}" , method="post">
+                        <label for="ingre">Nuovo</label>
+                        <input type="text" name="ingre" />
+                        <input type="submit" value="Modifica" />
+                    </form>
+
+                    <form action="{{('/cancellaXy')}}" method="post">
+                        <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
+                        <input type="submit" value="Cancella Ingrediente" />
+                    </form>
+                </li>
                 {% endif %}
 
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </ul>
 
 
-        <p>Costo Totale del piatto: {{piatto[3]}}</p>
+            <p>Costo Totale del piatto: {{piatto[3]}}</p>
 
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
 </body>
 </html>

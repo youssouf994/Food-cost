@@ -97,18 +97,29 @@ def aggiungiIngre():
     return redirect(url_for('calcolaTot'))
     #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
 
-@app.route('/modificaPiatto', methods=['POST'])
-def modificaNomePiatto():
+@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>', methods=['POST'])
+def modifica(sel, idP, selCol):
+    colonne=['nome', 'prezzoKg', 'quantita', 'costo']
+
     nome=request.form.get('nomePiatto')
+    nuovo=request.form.get('nuovo')
+    db=database.db()
 
-    #piatto.setNome(nome)
-    
+    if sel==1:
+        database.modifica_elemento(db, session['userId'], idP, 'piatti', colonne[0], nuovo)
+    elif sel==2:
+        nuovo=request.form.get('ingre')
+        database.modifica_elemento(db, session['userId'], idP, 'ingredienti', colonne[selCol], nuovo)
+
+
+    #piatto.setNome(nome)    
     #da aggiungere modifica specifica ad un solo oggetto dell'array
-
     #for a in piattiUtente:
     #    nome.append(piatto.getNome())
 
-    return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)#UGUALE A AGGIUNGI INGRE
+    db.close()
+
+    return redirect(url_for('calcolaTot'))
 
 
 
