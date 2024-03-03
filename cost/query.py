@@ -1,6 +1,6 @@
 from flask import g, render_template
 import sqlite3
-import query2
+
 
 class database:
     
@@ -24,6 +24,9 @@ class database:
         elif tabella=='ingredienti':
             cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente=?", (idUte,))
             piatti=cursore.fetchall()
+        elif tabella=='utenti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE id_utente=?", (idUte,))
+            piatti=cursore.fetchone()
 
 
         return piatti
@@ -31,15 +34,15 @@ class database:
     
 
     def visualizza_un_piatto(nome):#passa il nome <hidden> in modo da ingrandire piatto in 1 pagina
-        db_ram=db_utenti()
+        """db_ram=db_utenti()
         cursore=db_ram.cursor()
 
-        cursore.execute(GLOBALEselezionaSoloUnPiatto)
+        cursore.execute(query2.GLOBALEselezionaSoloUnPiatto)
         piatto=cursore.fetchone()
 
         
 
-        return piatto
+        return piatto"""
 
 
     #------------------------------------------------------------------------

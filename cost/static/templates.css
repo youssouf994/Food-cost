@@ -1,0 +1,11 @@
+.piatti {
+    display: inline-flex;
+    flex-direction: row;
+    width: 33.3%;
+    height: 44.4%;
+    margin: auto;
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+}

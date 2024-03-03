@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Calcola Food Cost</title>
-   
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='templates.css') }}" />
 </head>
 <body class="l1">
+
+    <div class="info_ute">
+        <p>Benvenut* {{(infoUtente[1])}} {{(infoUtente[2])}}, Azienda: {{(infoUtente[4])}}</p>
+    </div>
     <div class="fondoForm">
         <h1>Nuovo piatto</h1>
         <form action="{{('/nuovoPiatto')}}" method="post">

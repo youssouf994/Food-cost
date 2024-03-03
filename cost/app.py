@@ -9,6 +9,7 @@ from calcoli import Calcoli
 from query import database
 import query2
 import bcrypt
+import sqlite3
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='super_secret_key'
@@ -43,8 +44,9 @@ def calcolaTot():
 
     piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
     ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+    infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
     db.close()
-    return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente)
+    return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente, infoUtente=infoUtente)
 
 
 @app.route('/nuovoPiatto', methods=['POST', 'GET'])
