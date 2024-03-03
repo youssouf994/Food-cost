@@ -25,7 +25,7 @@
     <div class="fondoForm">
         <h1>Piatti salvati</h1>
         {% for piatto in piattiUtente %}
-        <div class="piatti" style=" border:solid;">
+        <div class="piatti">
             <p>Nome Piatto: {{piatto[2]}}</p>
             <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
 
@@ -59,11 +59,11 @@
             </form>
 
 
-            <ul>
+            <ul class="tab">
                 {% for ingredientiUtente in ingredientiUtente %}
 
                 {% if piatto[0]== ingredientiUtente[2] %}
-                <li>
+                <li class="tab2">
                     Ingrediente {{ingredientiUtente[3]}}
                     <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=0))}}" , method="post">
                         <label for="ingre">Nuovo</label>

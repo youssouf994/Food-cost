@@ -1,11 +1,90 @@
-.piatti {
-    display: inline-flex;
-    flex-direction: row;
-    width: 33.3%;
-    height: 44.4%;
-    margin: auto;
-    text-align: center;
-    margin-top: 5%;
-    margin-bottom: 5%;
+/* Reset CSS per inizializzare i margini e i padding */
+* {
+    margin: 0;
+    padding: 0;
 }
+
+/* Stili per il body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    padding: 20px;
 }
+
+/* Stili per il contenitore info_ute */
+.info_ute {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.tab2
+{
+    border:solid;
+}
+/* Stili per il contenitore fondoForm */
+.fondoForm {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border:solid;
+}
+
+
+
+/* Stili per gli input e i label */
+input[type="text"],
+input[type="submit"],
+input[type="reset"],
+label {
+    margin-bottom: 10px;
+}
+
+/* Stili per il titolo h1 */
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Stili per i paragrafi */
+p {
+    margin-bottom: 10px;
+}
+
+/* Stili per le liste non ordinate */
+ul {
+    margin-bottom: 10px;
+}
+
+/* Stili per gli elementi delle liste non ordinate */
+li {
+    margin-bottom: 5px;
+}
+
+/* Stili per i pulsanti */
+input[type="submit"],
+input[type="reset"] {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    input[type="submit"]:hover,
+    input[type="reset"]:hover {
+        background-color: #0056b3;
+    }
+
+/* Stili per i link */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
