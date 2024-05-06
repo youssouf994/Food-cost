@@ -5,11 +5,82 @@
 }
 
 /* Stili per il body */
-body {
+.body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.foto_index
+{
+    width: 70%;
+    height: 35%;
+    margin: 0 auto;
+    box-shadow: 0px 10px 5px #dedede;
+    -moz-box-shadow:  0px  10px 5px #dedede;
+    -webkit-box-shadow:  0px  10px 5px #dedede;
+    position: relative;
+    left: 12.5%;
+    padding: 3%;
+}
+
+#login_div 
+{
+    position:relative;
+    margin: 0 auto;
+    z-index: 9999;
+    width: 35%;
+    height: 35%;
+}
+
+.popup {
+    display: none;
+    position: relative;
+    margin: 0 auto;
+    margin-top: -15%;
+    width: 90%;
+    height: 85%;
+    background-color: azure;
+    z-index: 9999;
+}
+
+.log {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: aliceblue;
+    border-radius: 5%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    width: 35%;
+    height: 35%;
+    border-style: solid;
+    border-color: rgb(115, 165, 128);
+    border-width: 5px;
+}
+
+.login
+{
+    margin:auto;
+    text-align: center;
+}
+
+
+.servizi
+{
+    align-items: center;
+    text-align: center;
+}
+
+.slogan
+{
+    padding: 3%;
+    align-items: center;
+    text-align: center;
+}
+
 
 /* Stili per il contenitore info_ute */
 .info_ute {
@@ -17,22 +88,35 @@ body {
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 20px;
+    border-bottom: 3px;
+    border: solid;
+    box-shadow: 0px 10px 5px #dedede;
+    -moz-box-shadow: 0px 10px 5px #dedede;
+    -webkit-box-shadow: 0px 10px 5px #dedede;
 }  
 
 .tab2
 {
-    border:solid;
+
 }
 /* Stili per il contenitore fondoForm */
 .fondoForm {
+    position: relative;
     background-color: #ffffff;
     padding: 20px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    border:solid;
+    box-shadow: 0px 15px 10px -10px #dedede; /* Effetto di sollevamento */
+    -moz-box-shadow: 0px 15px 10px -10px #dedede;
+    -webkit-box-shadow: 0px 15px 10px -10px #dedede;
+    display: grid;
+    grid-template-columns: repeat(3, 30%); /* Tre colonne di larghezza flessibile */
+    grid-template-rows: repeat(25%); /* Due righe con altezza fissa */
+    gap: 4%; /* Spazio tra le colonne e le righe */
 }
 
-
+.piatti
+{
+    overflow:scroll;
+}
 
 /* Stili per gli input e i label */
 input[type="text"],

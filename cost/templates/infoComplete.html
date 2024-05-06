@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Calcola Food Cost</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='templates.css') }}" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".menuButton").click(function () {
+                var target = $(this).data('target');
+                $(target).slideToggle({
+                    direction: 'vertical'
+                });
+            });
+        });
+
+    </script>
+
+</head>
+
+<body class="l1">
+
+    <div class="info_ute">
+        <p>Benvenut* {{(infoUtente[1])}} {{(infoUtente[2])}}, Azienda: {{(infoUtente[4])}}</p>
+    </div>
+    <div class="fondoFor">
+       
+    </div>
+
+    <h1>Piatti salvati</h1>
+    <div class="fondoForm">
+       
+        <div class="piatti">
+            <p>Nome Piatto: {{piattiUtente[2]}}</p>
+            <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+
+
+
+
+
+            <div class="tab">
+                {% for ingredientiUtente in ingredientiUtente %}
+
+                {% if piattiUtente[0]== ingredientiUtente[2] %}
+                <!--TUTTI I COMMENTI NELLA CLASSE TAB 2 SONO LE MODIFICHE DEI VARI PARAMETRI
+        APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
+                <div class="tab2">
+                    <p>Ingrediente {{ingredientiUtente[3]}}, Prezzo al Kg: {{ingredientiUtente[4]}}, Quantita: {{ingredientiUtente[5]}}, Costo: {{ingredientiUtente[6]}}</p>
+
+
+                    <button class="menuButton" data-target="#menuToolsIngredienti">Tools</button>
+
+                    <div id="menuToolsIngredienti" class="menuToolsIngredienti" style="display:none ;">
+                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=0))}}" , method="post">
+                            <label for="ingre">Nuovo Alimento</label>
+                            <input type="text" name="ingre" />
+                            <input type="submit" value="Modifica" />
+                        </form>
+                        <br />
+                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=1, quanti=ingredientiUtente[5]))}}" , method="post">
+                            <label for="ingre">Nuovo Prezzo</label>
+                            <input type="text" name="ingre" />
+                            <input type="submit" value="Modifica" />
+                        </form>
+                        <br />
+                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=2))}}" , method="post">
+                            <label for="ingre">Nuovo Quantita''</label>
+                            <input type="text" name="ingre" />
+                            <input type="submit" value="Modifica" />
+                        </form>
+                        <br />
+                        
+
+                        <form action="{{('/cancellaXy')}}" method="post">
+                            <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
+                            <input type="submit" value="Cancella Ingrediente" />
+                        </form>
+                    </div>
+
+
+
+                </div>
+                {% endif %}
+
+                {% endfor %}
+            </div>
+
+
+            <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
+
+            <form action="{{('/nuovoIngrediente')}}" method="post">
+                <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+                <label for="nomeAlimento">Alimento</label>
+                <input type="text" id="nomeAlimento" name="nomeAlimento">
+                <br>
+
+                <label for="prezzoAlKg">Prezzo al Kg</label>
+                <input type="text" id="prezzoAlKg" name="prezzoAlKg">
+                <br>
+
+                <label for="quantita">Quantita inserita</label>
+                <input type="text" id="quantita" name="quantita">
+                <br>
+
+                <input type="submit" value="aggiungi">
+                <input type="reset" value="resetta campi">
+            </form>
+
+        </div>
+        
+    </div>
+
+</body>
+</html>

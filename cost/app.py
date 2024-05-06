@@ -49,6 +49,18 @@ def calcolaTot():
     return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente, infoUtente=infoUtente)
 
 
+@app.route('/visualizzaDashboardPiatto/<int:idPiatto>', methods=['POST', 'GET'])
+def visualizzaDashboardPiatto(idPiatto):
+    db=database.db()
+    #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
+    #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
+
+    piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
+    ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+    infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
+    db.close()
+    return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente)
+
 @app.route('/nuovoPiatto', methods=['POST', 'GET'])
 def nuovoPiatto():
     if request.method=='POST':
@@ -74,33 +86,39 @@ def calcolaPrezzo():
 
 @app.route('/nuovoIngrediente', methods=['POST', 'GET'])
 def aggiungiIngre():
-    nomePiatto=str(request.form.get('nomeP'))
-    ingrediente=request.form.get('nomeAlimento')
-    prezzoKg=float(request.form.get('prezzoAlKg'))
-    quanti=float(request.form.get('quantita'))
-    tot=0
-    prezzo=Calcoli.prezzoGrammi(quanti, prezzoKg)
+    try:
+        nomePiatto=str(request.form.get('nomeP'))
+        ingrediente=request.form.get('nomeAlimento')
+        prezzoKg=float(request.form.get('prezzoAlKg'))
+        quanti=float(request.form.get('quantita'))
+        tot=0
+        prezzo=round(Calcoli.prezzoGrammi(quanti, prezzoKg), 3)
 
-    db=database.db()
-    idPiatto=database.idPiatto(db, 'piatti', nomePiatto, session['userId'])
+        db=database.db()
+        idPiatto=database.idPiatto(db, 'piatti', nomePiatto, session['userId'])
     
-    database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto[0], ingrediente, prezzoKg, quanti, prezzo)
+        database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto[0], ingrediente, prezzoKg, quanti, prezzo)
+    
 
-    tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto[0], session['userId'], nomePiatto)
+        tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto[0], session['userId'], nomePiatto)
   
-    #piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
-    #for piattoIdenti in piattiUtente:
-        #if piattoIdenti.getNome()==nomePiatto:
-          #  piattoIdenti.aggiungiIngrediente(ingrediente, prezzoKg, quanti)  
-            #break    
-        #tot=piattoIdenti.sommaCosti()
+        #piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
+        #for piattoIdenti in piattiUtente:
+            #if piattoIdenti.getNome()==nomePiatto:
+              #  piattoIdenti.aggiungiIngrediente(ingrediente, prezzoKg, quanti)  
+                #break    
+            #tot=piattoIdenti.sommaCosti()
 
-    db.close()
-    return redirect(url_for('calcolaTot'))
-    #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
-
-@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>', methods=['POST'])
-def modifica(sel, idP, selCol):
+        #db.close()
+        del db
+        
+        return calcolaTot()
+        #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
+    except  Exception as e:
+        return render_template("errore.html", e=e)
+    
+@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>/<int:quanti>', methods=['POST'])
+def modifica(sel, idP, selCol, quanti=None):
     colonne=['nome', 'prezzoKg', 'quantita', 'costo']
 
     nome=request.form.get('nomePiatto')
@@ -109,6 +127,13 @@ def modifica(sel, idP, selCol):
 
     if sel==1:
         database.modifica_elemento(db, session['userId'], idP, 'piatti', colonne[0], nuovo)
+        
+        if selCol==1:
+            nuovo=float(nuovo)
+            ris=Calcoli.prezzoGrammi(quanti, nuovo)
+            database.modifica_elemento(db, session['userId'], idP, 'ingredienti', colonne[6], ris)
+            
+            ###############################################
     elif sel==2:
         nuovo=request.form.get('ingre')
         database.modifica_elemento(db, session['userId'], idP, 'ingredienti', colonne[selCol], nuovo)

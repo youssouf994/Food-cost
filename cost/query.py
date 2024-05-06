@@ -33,16 +33,22 @@ class database:
 
     
 
-    def visualizza_un_piatto(nome):#passa il nome <hidden> in modo da ingrandire piatto in 1 pagina
-        """db_ram=db_utenti()
-        cursore=db_ram.cursor()
+    def visualizza_un_piatto(db, tabella, idUte, idEle):#passa il nome <hidden> in modo da ingrandire piatto in 1 pagina
+        cursore=db.cursor()
 
-        cursore.execute(query2.GLOBALEselezionaSoloUnPiatto)
-        piatto=cursore.fetchone()
+        if tabella=='piatti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE piattoId=?", (idEle,))
+            elemento=cursore.fetchone()
+        elif tabella=='ingredienti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente=?", (idUte,))
+            elemento=cursore.fetchall()
+        elif tabella=='utenti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE id_utente=?", (idUte,))
+            elemento=cursore.fetchone()
 
-        
 
-        return piatto"""
+        return elemento
+
 
 
     #------------------------------------------------------------------------
@@ -119,7 +125,7 @@ class database:
             db.commit()
             
 
-            return render_template("calcolaPrezzo.html")
+            #return render_template("calcolaPrezzo.html")
 
         except Exception as e:
             print("Si è verificato un'errore:", e)
@@ -132,7 +138,7 @@ class database:
         cursore=db.cursor()
 
         cursore.execute("SELECT * FROM service WHERE id=?", (rif,))
-        trovato=cursor.fetchone()
+        trovato=cursore.fetchone()
     
 
         return rif
@@ -202,8 +208,10 @@ class database:
             for riga in risultati:
                 costo_ingrediente = riga[6]  # sesto elemento della tupla
                 tot += float(costo_ingrediente)
+                
+                tot_arrotondato=round(tot, 3)
 
-            cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (tot, idPiatto))
+            cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (tot_arrotondato, idPiatto))
             db.commit()
             return tot
 

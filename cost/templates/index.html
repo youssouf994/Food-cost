@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <head>
-
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='templates.css') }}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
 </head>
 
 <body>
+    
+    
     <div class="listaServizi">
-        <a href="{{url_for('calcolaPrezzo')}}">Calcola Food Cost</a>
-        <a href="{{url_for('crea_utente')}}">Registrati</a>
-        <a href="{{url_for('accesso')}}">Login</a>
+        <img src="{{url_for('static', filename='logo_esteso.png')}}" alt="My Image" class="foto_index" />
+        <p class="slogan" style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">Delegare consapevolmente(SLOGAN PAZZESCO ;D )</p>
+        <div class="servizi">
+            <div id="login_div" class="popup">
+                <div class="log">
+                    <p>{{msg}}</p>
+                    <form action="{{ url_for('accesso') }}" method="post" class="login">
+                        <img src="#" class="little" /><br>
+                        <label for="login1" class="etichette"><b>nome utente</b><input type="text" name="user" class="credenziali1" maxlength="255"></label><br>
+                        <label for="login2" class="etichette"><b>Password</b><input type="password" name="pass" class="credenziali1" maxlength="255"></label><br>
+                        <button type="submit">Login</button><br />
+                    </form>
+                    <button id="chiudi_div">Chiudi</button>
+                </div>
+            </div>
+            <p id="comparsa" class="link">LOGIN</p>
+            <a href="{{url_for('crea_utente')}}">Registrati</a>
+        </div>
     </div>
-</body>
+
+    </body>
