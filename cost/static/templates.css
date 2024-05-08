@@ -13,6 +13,13 @@
     align-items: center;
 }
 
+.piattoSingolo
+{
+    display:flex;
+    flex-direction:column;
+    gap:3%;
+}
+
 .foto_index
 {
     width: 70%;
@@ -93,11 +100,17 @@
     box-shadow: 0px 10px 5px #dedede;
     -moz-box-shadow: 0px 10px 5px #dedede;
     -webkit-box-shadow: 0px 10px 5px #dedede;
-}  
+} 
 
-.tab2
+.infoIn
 {
+    display:flex;
+    flex-direction:row;
+}
 
+.tab2 
+{
+    
 }
 /* Stili per il contenitore fondoForm */
 .fondoForm {
@@ -113,9 +126,14 @@
     gap: 4%; /* Spazio tra le colonne e le righe */
 }
 
-.piatti
-{
-    overflow:scroll;
+.piatti {
+    border-left-style: solid;
+    border-left-color: cornflowerblue;
+    border-left-width: 6px;
+    padding-left: 2%;
+    box-shadow: 10px 15px 10px -10px #dedede; /* Effetto di sollevamento */
+    -moz-box-shadow: 10px 15px 10px -10px #dedede;
+    -webkit-box-shadow: 10px 15px 10px -10px #dedede;
 }
 
 /* Stili per gli input e i label */

@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS ingredienti;
 DROP TABLE IF EXISTS collegamenti;
 DROP TABLE IF EXISTS utenti;
 
+
+
+
 CREATE TABLE utenti
 (
     id_utente INTEGER PRIMARY KEY AUTOINCREMENT,

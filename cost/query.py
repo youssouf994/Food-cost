@@ -40,8 +40,8 @@ class database:
             cursore.execute(f"SELECT * FROM {tabella} WHERE piattoId=?", (idEle,))
             elemento=cursore.fetchone()
         elif tabella=='ingredienti':
-            cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente=?", (idUte,))
-            elemento=cursore.fetchall()
+            cursore.execute(f"SELECT * FROM {tabella} WHERE ingredienteId=?", (idEle,))
+            elemento=cursore.fetchone()
         elif tabella=='utenti':
             cursore.execute(f"SELECT * FROM {tabella} WHERE id_utente=?", (idUte,))
             elemento=cursore.fetchone()
@@ -68,6 +68,13 @@ class database:
   
             elif tabella=='ingredienti':
                 cursore.execute(f"DELETE FROM {tabella} WHERE ingredienteId=?", (id,))
+                db_ram.commit()
+                cursore.close()
+                
+            elif tabella=='ingredientiForzata':
+                tabella='ingredienti'
+                
+                cursore.execute(f"DELETE FROM {tabella} WHERE idPiatto=?", (id,))
                 db_ram.commit()
                 cursore.close()
 
@@ -107,12 +114,9 @@ class database:
 
             cursore.execute(f"INSERT INTO {tabella} (idUtente, nome, costo) VALUES (?, ?, ?)", (idUte, nome, costo ))
             db_ram.commit()
-            
-
-            return render_template("calcolaPrezzo.html")
 
         except Exception as e:
-            return render_template("index.html")
+            return render_template("errore.html")
 
 
     #---------------------------------------------------------------------------------
@@ -198,7 +202,7 @@ class database:
 
 
     
-    def sommaCosti_ingredienti(db, tabella, idPiatto, idUte, nome):
+    def sommaCosti_ingredienti(db, tabella, idPiatto, idUte):
         try:
             cursore = db.cursor()
             cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto=? AND idUtente=?", (idPiatto, idUte,))
@@ -209,7 +213,7 @@ class database:
                 costo_ingrediente = riga[6]  # sesto elemento della tupla
                 tot += float(costo_ingrediente)
                 
-                tot_arrotondato=round(tot, 3)
+            tot_arrotondato=round(tot, 3)
 
             cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (tot_arrotondato, idPiatto))
             db.commit()
@@ -218,3 +222,7 @@ class database:
         except Exception as e:
             print("Si è verificato un'errore:", e)
             return None
+
+
+
+    

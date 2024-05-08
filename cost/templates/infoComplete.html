@@ -33,7 +33,7 @@
     <h1>Piatti salvati</h1>
     <div class="fondoForm">
        
-        <div class="piatti">
+        <div class="piattoSingolo">
             <p>Nome Piatto: {{piattiUtente[2]}}</p>
             <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
 
@@ -48,31 +48,39 @@
                 <!--TUTTI I COMMENTI NELLA CLASSE TAB 2 SONO LE MODIFICHE DEI VARI PARAMETRI
         APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
                 <div class="tab2">
-                    <p>Ingrediente {{ingredientiUtente[3]}}, Prezzo al Kg: {{ingredientiUtente[4]}}, Quantita: {{ingredientiUtente[5]}}, Costo: {{ingredientiUtente[6]}}</p>
+                    <div class="infoIn">
+                        <div ="">
+                            <p>
+                                IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
+                                PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b><br>
+                                QUANTITA'': <b>{{ingredientiUtente[5]}}</b>  <br>
+                                COSTO: <b>{{ingredientiUtente[6]}}</b>
+                                <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
+                            </p>
+                        </div>
 
+                    </div>
 
-                    <button class="menuButton" data-target="#menuToolsIngredienti">Tools</button>
-
-                    <div id="menuToolsIngredienti" class="menuToolsIngredienti" style="display:none ;">
-                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=0))}}" , method="post">
+                    <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
+                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=0))}}" method="post">
                             <label for="ingre">Nuovo Alimento</label>
-                            <input type="text" name="ingre" />
+                            <input type="text" name="nuovo" />
                             <input type="submit" value="Modifica" />
                         </form>
                         <br />
-                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=1, quanti=ingredientiUtente[5]))}}" , method="post">
+                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=1))}}" method="post">
                             <label for="ingre">Nuovo Prezzo</label>
-                            <input type="text" name="ingre" />
+                            <input type="text" name="nuovo" />
                             <input type="submit" value="Modifica" />
                         </form>
                         <br />
-                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=2))}}" , method="post">
+                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=2))}}" method="post">
                             <label for="ingre">Nuovo Quantita''</label>
-                            <input type="text" name="ingre" />
+                            <input type="text" name="nuovo" />
                             <input type="submit" value="Modifica" />
                         </form>
                         <br />
-                        
+
 
                         <form action="{{('/cancellaXy')}}" method="post">
                             <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
@@ -88,8 +96,6 @@
                 {% endfor %}
             </div>
 
-
-            <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
 
             <form action="{{('/nuovoIngrediente')}}" method="post">
                 <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
@@ -108,6 +114,8 @@
                 <input type="submit" value="aggiungi">
                 <input type="reset" value="resetta campi">
             </form>
+
+            <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
 
         </div>
         
