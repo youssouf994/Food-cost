@@ -11,6 +11,8 @@ from query import database
 import query2
 import bcrypt
 import sqlite3
+from functools import wraps
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='super_secret_key'
@@ -24,6 +26,14 @@ piattiUtente=[]
 # Make the WSGI interface available at the top level so wfastcgi can get it.
 wsgi_app = app.wsgi_app
 
+def login_required(view_func):
+    @wraps(view_func)
+    def wrapped_view(*args, **kwargs):
+        if 'userId' in session:
+            return view_func(*args, **kwargs)
+        else:
+            return redirect(url_for('crea_utente'))
+    return wrapped_view
 
 @app.route('/')
 @app.route('/main')
@@ -38,6 +48,7 @@ def login():
     return render_template('login.html') 
 
 @app.route('/calcolaTotale', methods=['POST', 'GET'])
+@login_required
 def calcolaTot():
     db=database.db()
     #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
@@ -51,6 +62,7 @@ def calcolaTot():
 
 
 @app.route('/visualizzaDashboardPiatto/<int:idPiatto>', methods=['POST', 'GET'])
+@login_required
 def visualizzaDashboardPiatto(idPiatto):
     db=database.db()
     #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
@@ -63,6 +75,7 @@ def visualizzaDashboardPiatto(idPiatto):
     return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente)
 
 @app.route('/nuovoPiatto', methods=['POST', 'GET'])
+@login_required
 def nuovoPiatto():
     if request.method=='POST':
         nome=request.form.get('nomePiatto')
@@ -81,12 +94,14 @@ def nuovoPiatto():
     #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)
 
 @app.route('/calcolaPrezzo', methods=['POST', 'GET'])
+@login_required
 def calcolaPrezzo():
     
 
     return render_template('calcolaPrezzo.html')
 
 @app.route('/nuovoIngrediente', methods=['POST', 'GET'])
+@login_required
 def aggiungiIngre():
     try:
         nomePiatto=str(request.form.get('nomeP'))
@@ -121,6 +136,7 @@ def aggiungiIngre():
         return render_template("errore.html", e=e)
     
 @app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>', methods=['POST', 'GET'])
+@login_required
 def modifica(sel, idP, selCol):
     colonne=['nome', 'prezzoKg', 'quantita', 'costo']
     
@@ -152,6 +168,7 @@ def modifica(sel, idP, selCol):
 
 
 @app.route('/cancellaX', methods=['GET', 'POST'])
+@login_required
 def cancellaPiatto():
     nome=request.form.get('nomeP')
 
@@ -170,6 +187,7 @@ def cancellaPiatto():
 
 
 @app.route('/cancellaXy', methods=['GET', 'POST'])
+@login_required
 def cancellaIngre():
     tot=0
     nome=request.form.get('nomeI')
@@ -185,7 +203,7 @@ def cancellaIngre():
     return redirect(url_for('calcolaTot'))
 
 
-@app.route('/registrazione', methods=['POST', 'GET']) 
+@app.route('/registrazione', methods=['POST', 'GET'])
 def crea_utente():
     if request.method=='POST':
         nome=request.form['nome']
@@ -242,7 +260,10 @@ def accesso():
         trovato_nome=None
         return redirect(url_for('main'))        
 
-
+@app.route('/logout')
+def logOut():
+    session.pop('userId', None)
+    return redirect(url_for('main'))
 
 
 if __name__ == "__main__":
