@@ -1,9 +1,3 @@
-"""
-This script runs the application using a development server.
-It contains the definition of routes and views for the application.
-"""
-
-from cmath import log
 from flask import Flask, render_template, request, session, redirect, url_for
 from piatto import Piatto
 from calcoli import Calcoli
@@ -13,6 +7,20 @@ import bcrypt
 import sqlite3
 from functools import wraps
 
+
+
+"""
+    NOME APPLICAZIONE: SMART RESTOURANT
+    
+    SCOPO APPLICAZIONE: integrare in un'unica suite quanti più strumenti possibile tra calcolatore food cost,
+                        gestione magazzino, visualizzazione giacienze in tempo reale,
+                        
+    CONTENUTO DEL FILE: route principali di accesso alle pagine e ai servizi delle applicazioni, sono presenti
+                        tutte le funzioni di partenza dei vari eventi, potete trovare la spiegazione dettagliata
+                        prima delle funzioni presenti sul file
+                        
+    FILE COLLEGATI:     
+"""
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='super_secret_key'
@@ -24,8 +32,9 @@ piattiUtente=[]
 
 
 # Make the WSGI interface available at the top level so wfastcgi can get it.
-wsgi_app = app.wsgi_app 
+#wsgi_app = app.wsgi_app 
 
+#decoratore che impedisce le aperture di pagine che restituiscono dati sensibili senza login
 def login_required(view_func):
     @wraps(view_func)
     def wrapped_view(*args, **kwargs):
@@ -35,18 +44,33 @@ def login_required(view_func):
             return redirect(url_for('crea_utente'))
     return wrapped_view
 
+#ACCESSO AL PROGRAMMA ( vedi esecuzione del server in fondo alla pagina )
 @app.route('/')
 @app.route('/main')
 def main():
-    """Renders a sample page."""
+   
   
     return render_template('index.html')    
 
-@app.route('/login')
-def login():
-    
-    return render_template('login.html') 
 
+
+"""
+    la funzione ritorna tutti i valori necessari a mostrare una panoramica di tutti i piatti di cui l'utente
+    ha voluto calcolare il food cost, in pratica raccoglie dati mirati a generare una dashboard
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route calcola totale accetta richieste get e post
+    @decoratore LOGIN RICHIESTO
+    
+    func()
+        acquisizione database (vedi classe database nel file cartellaOrigine/query.py)
+        acquisizione di tutti i piatti dell'utente passato come parametro
+        acquisizione degli ingredienti che compongono i piatti raccolti in precedenza
+        acquisizione delle info utente
+        chiusura dell'oggetto database creato all'ingresso della route
+        return
+"""
 @app.route('/calcolaTotale', methods=['POST', 'GET'])
 @login_required
 def calcolaTot():
@@ -54,13 +78,43 @@ def calcolaTot():
     #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
     #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
 
+    #(database, nome tabella db, id dell'utente nelle tabelle)
     piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
+    
+    #(database, nome tabella db, id dell'utente nelle tabelle)
     ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+    
+    #(database, nome tabella db, id dell'utente nelle tabelle)
     infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
+    
     db.close()
     return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente, infoUtente=infoUtente)
 
+"""
+    INFO COMPLETE DI UN SOLO PIATTO SELEZIONATO DA CALCOLAPREZZO.HTML
+    la funzione ritorna tutti i valori necessari a mostrare le specifiche di un piatto di cui l'utente
+    ha voluto calcolare il food cost, in pratica raccoglie dati mirati a visualizzare dati come la lista
+    di ingredienti che compongono un piatto, in che quantità sono presenti, quanto vale la quantità inserita,
+    il prezzo al kg, 
+    
+---------------------------------------------------------------------------------------------------------------
 
+    @route calcola totale accetta richieste get e post, e prende come parametro un intero. questo intero
+        serve a tenere traccia del piatto cliccato nella pagina precedente.
+        l'utente nella pagina precedente (calcolaPrezzo.html) aveva la carrellata di piatti, in base a quale link
+        ha scelto il form nella pag html raccoglie il dato e lo reinvia tramite richiesta post nell'url.
+        <int:idPiatto> è il passaggio di variabile da un contesto all'altro
+        
+    @decoratore LOGIN RICHIESTO
+    
+    func(idPiatto)
+        acquisisco il db ( classe database presente in radice/query.py)
+        acquisizione di un solo piatto utente (quello selezionato nella pag calcolaPrezzo.html)
+        acquisizione informazioni sull'utente
+        chiusura oggetto db
+        return
+
+"""
 @app.route('/visualizzaDashboardPiatto/<int:idPiatto>', methods=['POST', 'GET'])
 @login_required
 def visualizzaDashboardPiatto(idPiatto):
@@ -68,11 +122,38 @@ def visualizzaDashboardPiatto(idPiatto):
     #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
     #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
 
+    #(db, nome tabella, id utente, id piatto)
     piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
+    
+    #(db, nome tabella, id utente)
     ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+    
+    #(db, nome tabella, id utente)
     infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
+    
+    #chiusura database
     db.close()
     return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente)
+
+"""
+    la funzione permette all'utente di aggiungere un nuovo piatto alla sua collezione
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route /*nuovopiatto accetta metodi get e post
+    
+    @decoratore LOGIN RICHIESTO
+    
+    se la richiesta da parte del client è post
+    aggiungi alla var nome il testo nel campo input nomePiatto
+    
+    salva in idU l'id dell'utente
+    apri il db
+    aggiungi il piatto nel db
+    chiudi il db
+    
+    ritorna la funzione calcolaTot
+"""
 
 @app.route('/nuovoPiatto', methods=['POST', 'GET'])
 @login_required
@@ -93,12 +174,26 @@ def nuovoPiatto():
     return redirect(url_for('calcolaTot'))
     #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente)
 
-@app.route('/calcolaPrezzo', methods=['POST', 'GET'])
-@login_required
-def calcolaPrezzo():
-    
 
-    return render_template('calcolaPrezzo.html')
+
+"""
+    la funzione permette all'utente di aggiungere un nuovo ingrediente ad un piatto esistente
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route /nuovoIngrediente accetta metodi get e post
+    
+    @decoratore LOGIN RICHIESTO
+    
+    se la richiesta da parte del client è post
+    estrai i dati inviati dal form (nome del piatto, nome dell'ingrediente, prezzo al kg, quantità)
+    calcola il costo totale dell'ingrediente in base alla quantità e al prezzo al kg
+    salva l'ingrediente nel database associandolo al piatto specificato
+    aggiorna il costo totale del piatto
+    chiudi il db
+    
+    ritorna la funzione calcolaTot
+"""
 
 @app.route('/nuovoIngrediente', methods=['POST', 'GET'])
 @login_required
@@ -135,6 +230,26 @@ def aggiungiIngre():
     except  Exception as e:
         return render_template("errore.html", e=e)
     
+
+"""
+    la funzione permette all'utente di modificare un piatto o un ingrediente esistente
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route /modifica/<int:sel>/<int:idP>/<int:selCol> accetta metodi get e post
+    
+    @decoratore LOGIN RICHIESTO
+    
+    se la richiesta da parte del client è post
+    estrai i dati inviati dal form (nome del piatto, nuovo valore)
+    seleziona la colonna del database da modificare in base ai parametri della route
+    aggiorna il valore nel database
+    se l'elemento modificato è un ingrediente, ricalcola il costo totale dell'ingrediente
+    chiudi il db
+    
+    ritorna la funzione calcolaTot
+"""
+    
 @app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>', methods=['POST', 'GET'])
 @login_required
 def modifica(sel, idP, selCol):
@@ -166,6 +281,24 @@ def modifica(sel, idP, selCol):
     return redirect(url_for('calcolaTot'))
 
 
+"""
+    la funzione permette all'utente di cancellare un piatto esistente
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route /cancellaX accetta metodi get e post
+    
+    @decoratore LOGIN RICHIESTO
+    
+    estrai il nome del piatto da cancellare dal form
+    apri il db
+    trova l'id del piatto
+    elimina tutti gli ingredienti associati al piatto
+    elimina il piatto
+    chiudi il db
+    
+    ritorna la funzione calcolaTot
+"""
 
 @app.route('/cancellaX', methods=['GET', 'POST'])
 @login_required
@@ -186,6 +319,24 @@ def cancellaPiatto():
     return redirect(url_for('calcolaTot'))
 
 
+"""
+    la funzione permette all'utente di cancellare un ingrediente esistente
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route /cancellaXy accetta metodi get e post
+    
+    @decoratore LOGIN RICHIESTO
+    
+    estrai il nome dell'ingrediente da cancellare dal form
+    apri il db
+    trova l'id dell'ingrediente
+    elimina l'ingrediente
+    aggiorna il costo totale del piatto a cui l'ingrediente era associato
+    chiudi il db
+    
+    ritorna la funzione calcolaTot
+"""
 @app.route('/cancellaXy', methods=['GET', 'POST'])
 @login_required
 def cancellaIngre():
@@ -202,7 +353,22 @@ def cancellaIngre():
     db.close()
     return redirect(url_for('calcolaTot'))
 
+"""
+    la funzione permette all'utente di registrarsi al sistema
+    
+---------------------------------------------------------------------------------------------------------------
 
+    @route /registrazione accetta metodi get e post
+    
+    se la richiesta da parte del client è post
+    estrai i dati inviati dal form (nome, cognome, azienda, mail, password)
+    controlla se l'email esiste già nel database
+    se esiste, reindirizza alla pagina principale
+    se non esiste, codifica la password e salva il nuovo utente nel database
+    chiudi il db
+    
+    ritorna la pagina di login
+"""
 @app.route('/registrazione', methods=['POST', 'GET'])
 def crea_utente():
     if request.method=='POST':
@@ -234,7 +400,19 @@ def crea_utente():
 
     return render_template('registrazione.html')
 
+"""
+    la funzione permette all'utente di effettuare il login
+    
+---------------------------------------------------------------------------------------------------------------
 
+    @route /login accetta metodi get e post
+    
+    se la richiesta da parte del client è post
+    estrai i dati inviati dal form (utente, password)
+    controlla se l'utente esiste nel database e verifica la password
+    se corretto, salva l'id utente nella sessione e reindirizza alla dashboard
+    se errato, reindirizza alla pagina principale
+"""
 @app.route('/login', methods=['POST', 'GET'])
 def accesso():
     trovato_nome=None
@@ -260,6 +438,17 @@ def accesso():
         trovato_nome=None
         return redirect(url_for('main'))        
 
+
+"""
+    la funzione permette all'utente di effettuare il logout
+    
+---------------------------------------------------------------------------------------------------------------
+
+    @route /logout
+    
+    rimuove l'id utente dalla sessione
+    reindirizza alla pagina principale
+"""
 @app.route('/logout')
 def logOut():
     session.pop('userId', None)
@@ -268,6 +457,6 @@ def logOut():
 
 if __name__ == "__main__":
     # Run the app server on localhost:4449
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=4449)
 
 
