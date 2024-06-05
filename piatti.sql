@@ -32,8 +32,26 @@ CREATE TABLE ingredienti
     nome TEXT,
     prezzoKg DECIMAL (10, 4),
 	quantita DECIMAL (10, 4),
-    costo DECIMAL(10, 3)
+    costo DECIMAL(10, 3),
+    magazzinoId INT
 );
+
+CREATE TABLE magazzino
+(
+    magazzinoId INTEGER PRIMARYKEY AUTORINCREMENT,
+    idUtente INT,
+    nome TEXT,
+    descrizione TEXT,
+    unitaDiMisura TEXT,
+    quanti DECIMAL(5,3),
+    codice TEXT,
+    famiglia TEXT,
+    sottoFamiglia TEXT,
+    fornitore TEXT,
+    codFornitore TEXT,
+    ordineMinimo INT
+    prezzo DECIMAL(5, 3)
+)
 
 CREATE TABLE collegamenti
 (   
