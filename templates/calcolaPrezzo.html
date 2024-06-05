@@ -66,7 +66,7 @@
 
             <button class="buttonButton" data-target="#buttonButton{{ loop.index }}">Gestisci</button>
             <div id="buttonButton{{ loop.index }}" class="buttonButton" style="display:none ;">
-                <form action="{{(url_for('modifica', sel=1, idP=piatto[0], selCol=0))}}" method="post">
+                <form action="{{(url_for('modifica', sel=1, idP=piatto[0], selCol=0, idE=0))}}" method="post">
                     <input type="submit" value="Modifica nome piatto" />
                     <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
                     <input type="text" name="nuovo" />

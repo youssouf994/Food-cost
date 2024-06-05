@@ -137,13 +137,14 @@ class database:
                 cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE ingredienteId=?", (nuovo, idSpecifico))
                 db_ram.commit()
 
-            return True
+            
 
         except Exception as e:
             return False
 
         finally:
             cursore.close()
+            return True
 
     @staticmethod
     def aggiungi_piatto(db_ram, tabella, idUte, nome, costo):
@@ -296,11 +297,15 @@ class database:
             tabella (str): Nome della tabella da cui selezionare i dati.
             idPiatto (int): ID del piatto.
             idUte (int): ID dell'utente.
-
+            
+            tot_arrotondato (float): arrotondo il risultato
+            aggiorno la colonna costo della tabella PIATTI in corrispondenza di piatto Id
+            
         Returns:
             float: Totale dei costi degli ingredienti arrotondato a 3 decimali.
         """
         try:
+   
             cursore = db.cursor()
             cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto=? AND idUtente=?", (idPiatto, idUte))
             risultati = cursore.fetchall()

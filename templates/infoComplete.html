@@ -70,19 +70,19 @@
                     </div>
 
                     <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
-                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=0))}}" method="post">
+                        <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0]))}}" method="post">
                             <label for="ingre">Nuovo Alimento</label>
                             <input type="text" name="nuovo" />
                             <input type="submit" value="Modifica" />
                         </form>
                         <br />
-                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=1))}}" method="post">
+                        <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0]))}}" method="post">
                             <label for="ingre">Nuovo Prezzo</label>
                             <input type="text" name="nuovo" />
                             <input type="submit" value="Modifica" />
                         </form>
                         <br />
-                        <form action="{{(url_for('modifica', sel=2, idP=ingredientiUtente[0], selCol=2))}}" method="post">
+                        <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0]))}}" method="post">
                             <label for="ingre">Nuovo Quantita''</label>
                             <input type="text" name="nuovo" />
                             <input type="submit" value="Modifica" />

@@ -250,26 +250,28 @@ def aggiungiIngre():
     ritorna la funzione calcolaTot
 """
     
-@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>', methods=['POST', 'GET'])
+@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>/<int:idE>', methods=['POST', 'GET'])
 @login_required
-def modifica(sel, idP, selCol):
+def modifica(sel, idP, selCol, idE):
     colonne=['nome', 'prezzoKg', 'quantita', 'costo']
     
-    if request.method=='POST':
+    if request.method=='POST': 
         nome=request.form.get('nomePiatto')
         nuovo=request.form.get('nuovo')
         db=database.db()
 
         if sel==1:
+            
             database.modifica_elemento(db, session['userId'], idP, 'piatti', colonne[0], nuovo)
         
 
         elif sel==2:
             #nuovo=request.form.get('ingre') da eliminare
-            database.modifica_elemento(db, session['userId'], idP, 'ingredienti', colonne[selCol], nuovo)
-            elemento=database.visualizza_un_piatto(db, 'ingredienti', session['userId'], idP)
+            database.modifica_elemento(db, session['userId'], idE, 'ingredienti', colonne[selCol], nuovo)
+            elemento=database.visualizza_un_piatto(db, 'ingredienti', session['userId'], idE)
             nuovo=Calcoli.prezzoGrammi(float(elemento[5]), float(elemento[4]))
-            database.modifica_elemento(db, session['userId'], idP, 'ingredienti', colonne[3], nuovo)
+            database.modifica_elemento(db, session['userId'], idE, 'ingredienti', colonne[3], nuovo)
+            database.sommaCosti_ingredienti(db, 'ingredienti', idP, session['userId'])
 
         #piatto.setNome(nome)    
         #da aggiungere modifica specifica ad un solo oggetto dell'array
