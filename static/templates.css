@@ -2,6 +2,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing:border-box;
 }
 
 /* Stili per il body */
@@ -11,7 +12,43 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    height:100%;
 }
+
+
+
+.navLaterale {
+    width: 12%;
+    background: linear-gradient(to right, cornflowerblue, white);
+    color: white;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
+
+
+
+navLaterale.a
+{
+    color:white;
+    text-decoration:none;
+}
+
+.container {
+    margin-left: 12%;
+    padding: 2%;
+    width: calc(100% - 12%);
+    overflow-y: auto;
+    height: 100%;
+    margin-top: 5%;
+    
+}
+
+
 
 .piattoSingolo
 {
@@ -100,6 +137,12 @@
     box-shadow: 0px 10px 5px #dedede;
     -moz-box-shadow: 0px 10px 5px #dedede;
     -webkit-box-shadow: 0px 10px 5px #dedede;
+    position: fixed; /* Fissa la posizione in alto */
+    top: 0; /* Posiziona l'elemento in alto */
+    width: calc(100% - 12%); /* Sottrae la larghezza della navLaterale */
+    left: 12%; /* Posiziona l'elemento dopo la navLaterale */
+    z-index: 1000; /* Assicura che l'elemento stia sopra gli altri */
+}
 } 
 
 .infoIn
@@ -190,3 +233,10 @@ a {
     a:hover {
         text-decoration: underline;
     }
+
+
+.inserimentoDati
+{
+    display:grid;
+    grid-auto-columns:auto;
+}

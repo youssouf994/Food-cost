@@ -34,100 +34,101 @@
             </div>
         </div>
     </div>
-    <div class="fondoFor">
-       
-    </div>
 
-    <h1>Piatti salvati</h1>
-    <div class="fondoForm">
-       
-        <div class="piattoSingolo">
-            <p>Nome Piatto: {{piattiUtente[2]}}</p>
-            <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+    <nav class="navLaterale">
+        <ul>
+            <li><a href="{{(url_for('dashboardMagazzino'))}}">Magazzino</a></li>
+            <li><a href="{{(url_for('calcolaTot'))}}">Calcola costi menù</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Piatti salvati</h1>
+        <div class="fondoForm">
 
+            <div class="piattoSingolo">
+                <p>Nome Piatto: {{piattiUtente[2]}}</p>
+                <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
 
+                <div class="tab">
+                    {% for ingredientiUtente in ingredientiUtente %}
 
+                    {% if piattiUtente[0]== ingredientiUtente[2] %}
+                    <!--TUTTI I COMMENTI NELLA CLASSE TAB 2 SONO LE MODIFICHE DEI VARI PARAMETRI
+                APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
+                    <div class="tab2">
+                        <div class="infoIn">
+                            <div ="">
+                                <p>
+                                    IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
+                                    PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b><br>
+                                    QUANTITA'': <b>{{ingredientiUtente[5]}}</b>  <br>
+                                    COSTO: <b>{{ingredientiUtente[6]}}</b>
+                                    <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
+                                </p>
+                            </div>
 
-
-            <div class="tab">
-                {% for ingredientiUtente in ingredientiUtente %}
-
-                {% if piattiUtente[0]== ingredientiUtente[2] %}
-                <!--TUTTI I COMMENTI NELLA CLASSE TAB 2 SONO LE MODIFICHE DEI VARI PARAMETRI
-        APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
-                <div class="tab2">
-                    <div class="infoIn">
-                        <div ="">
-                            <p>
-                                IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
-                                PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b><br>
-                                QUANTITA'': <b>{{ingredientiUtente[5]}}</b>  <br>
-                                COSTO: <b>{{ingredientiUtente[6]}}</b>
-                                <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
-                            </p>
                         </div>
 
+                        <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
+                            <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0]))}}" method="post">
+                                <label for="ingre">Nuovo Alimento</label>
+                                <input type="text" name="nuovo" />
+                                <input type="submit" value="Modifica" />
+                            </form>
+                            <br />
+                            <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0]))}}" method="post">
+                                <label for="ingre">Nuovo Prezzo</label>
+                                <input type="text" name="nuovo" />
+                                <input type="submit" value="Modifica" />
+                            </form>
+                            <br />
+                            <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0]))}}" method="post">
+                                <label for="ingre">Nuovo Quantita''</label>
+                                <input type="text" name="nuovo" />
+                                <input type="submit" value="Modifica" />
+                            </form>
+                            <br />
+
+
+                            <form action="{{('/cancellaXy')}}" method="post">
+                                <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
+                                <input type="submit" value="Cancella Ingrediente" />
+                            </form>
+                        </div>
+
+
+
                     </div>
+                    {% endif %}
 
-                    <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
-                        <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0]))}}" method="post">
-                            <label for="ingre">Nuovo Alimento</label>
-                            <input type="text" name="nuovo" />
-                            <input type="submit" value="Modifica" />
-                        </form>
-                        <br />
-                        <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0]))}}" method="post">
-                            <label for="ingre">Nuovo Prezzo</label>
-                            <input type="text" name="nuovo" />
-                            <input type="submit" value="Modifica" />
-                        </form>
-                        <br />
-                        <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0]))}}" method="post">
-                            <label for="ingre">Nuovo Quantita''</label>
-                            <input type="text" name="nuovo" />
-                            <input type="submit" value="Modifica" />
-                        </form>
-                        <br />
-
-
-                        <form action="{{('/cancellaXy')}}" method="post">
-                            <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
-                            <input type="submit" value="Cancella Ingrediente" />
-                        </form>
-                    </div>
-
-
-
+                    {% endfor %}
                 </div>
-                {% endif %}
 
-                {% endfor %}
+
+                <form action="{{('/nuovoIngrediente')}}" method="post">
+                    <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+                    <label for="nomeAlimento">Alimento</label>
+                    <input type="text" id="nomeAlimento" name="nomeAlimento">
+                    <br>
+
+                    <label for="prezzoAlKg">Prezzo al Kg</label>
+                    <input type="text" id="prezzoAlKg" name="prezzoAlKg">
+                    <br>
+
+                    <label for="quantita">Quantita inserita</label>
+                    <input type="text" id="quantita" name="quantita">
+                    <br>
+
+                    <input type="submit" value="aggiungi">
+                    <input type="reset" value="resetta campi">
+                </form>
+
+                <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
+
             </div>
 
-
-            <form action="{{('/nuovoIngrediente')}}" method="post">
-                <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
-                <label for="nomeAlimento">Alimento</label>
-                <input type="text" id="nomeAlimento" name="nomeAlimento">
-                <br>
-
-                <label for="prezzoAlKg">Prezzo al Kg</label>
-                <input type="text" id="prezzoAlKg" name="prezzoAlKg">
-                <br>
-
-                <label for="quantita">Quantita inserita</label>
-                <input type="text" id="quantita" name="quantita">
-                <br>
-
-                <input type="submit" value="aggiungi">
-                <input type="reset" value="resetta campi">
-            </form>
-
-            <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
-
         </div>
-        
     </div>
-
 </body>
 </html>

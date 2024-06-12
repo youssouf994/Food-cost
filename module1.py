@@ -13,4 +13,4 @@ with open ('piatti.sql', mode='r', encoding='utf-8') as f:
     connection.executescript(f.read())
 
 connection.commit()
-connection.close()
+connection.close() 

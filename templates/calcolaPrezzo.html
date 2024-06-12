@@ -19,12 +19,12 @@
         });
 
 
+
     </script>
 
 </head>
 
 <body class="l1">
-
     <div class="info_ute">
         <div>
             <p>
@@ -32,59 +32,67 @@
             </p>
 
             <div>
-                <a href="{{(url_for('logOut'))}}">log Out</a> 
+                <a href="{{(url_for('logOut'))}}">log Out</a>
             </div>
         </div>
     </div>
-    
-    <div class="fondoFor">
-        <h1>Nuovo piatto</h1>
-        <form action="{{('/nuovoPiatto')}}" method="post">
-            <label for="nomePiatto">Inserisci nuovo piatto</label>
-            <input type="text" id="nomePiatto" name="nomePiatto">
-            <input type="submit" value="Nuovo Piatto">
-        </form>
 
-        <p>percentuale costi gestione</p>
-    </div>
+    <nav class="navLaterale">
+        <ul>
+            <li><a href="{{(url_for('dashboardMagazzino'))}}">Magazzino</a></li>
+            <li><a href="{{(url_for('calcolaTot'))}}">Calcola costi menù</a></li>
+        </ul>
+    </nav>
 
-    <h1>Piatti salvati</h1>
-    <div class="fondoForm">
+    <div class="container">
+        <div class="fondoFor">
+            <h1>Nuovo piatto</h1>
+            <form action="{{('/nuovoPiatto')}}" method="post">
+                <label for="nomePiatto">Inserisci nuovo piatto</label>
+                <input type="text" id="nomePiatto" name="nomePiatto">
+                <input type="submit" value="Nuovo Piatto">
+            </form>
 
-        {% for piatto in piattiUtente %}
-        <div class="piatti">
-            <div class="infoIn">
-                <div>
-                    <p>Nome Piatto:     </p>
-                </div>
-                <div>
-                    <a href="{{url_for('visualizzaDashboardPiatto', idPiatto=piatto[0])}}">{{piatto[2]}}</a>
-                </div>
-                <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
-            </div>
-
-
-            <button class="buttonButton" data-target="#buttonButton{{ loop.index }}">Gestisci</button>
-            <div id="buttonButton{{ loop.index }}" class="buttonButton" style="display:none ;">
-                <form action="{{(url_for('modifica', sel=1, idP=piatto[0], selCol=0, idE=0))}}" method="post">
-                    <input type="submit" value="Modifica nome piatto" />
-                    <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
-                    <input type="text" name="nuovo" />
-                </form>
-
-                <form action="{{('/cancellaX')}}" method="post">
-                    <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
-                    <input type="submit" value="Cancella {{piatto[2]}}" />
-                </form>
-
-            </div>
-            
-
-            <p>Costo Totale del piatto: {{piatto[3]}}</p>
-
+            <p>percentuale costi gestione</p>
         </div>
-        {% endfor %}
-    </div>
 
+        <h1>Piatti salvati</h1>
+        <div class="fondoForm">
+
+            {% for piatto in piattiUtente %}
+            <div class="piatti">
+                <div class="infoIn">
+                    <div>
+                        <p>Nome Piatto:     </p>
+                    </div>
+                    <div>
+                        <a href="{{url_for('visualizzaDashboardPiatto', idPiatto=piatto[0])}}">{{piatto[2]}}</a>
+                    </div>
+                    <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+                </div>
+
+
+                <button class="buttonButton" data-target="#buttonButton{{ loop.index }}">Gestisci</button>
+                <div id="buttonButton{{ loop.index }}" class="buttonButton" style="display:none ;">
+                    <form action="{{(url_for('modifica', sel=1, idP=piatto[0], selCol=0, idE=0))}}" method="post">
+                        <input type="submit" value="Modifica nome piatto" />
+                        <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+                        <input type="text" name="nuovo" />
+                    </form>
+
+                    <form action="{{('/cancellaX')}}" method="post">
+                        <input type="hidden" name="nomeP" value="{{piatto[2]}}" />
+                        <input type="submit" value="Cancella {{piatto[2]}}" />
+                    </form>
+
+                </div>
+
+
+                <p>Costo Totale del piatto: {{piatto[3]}}</p>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

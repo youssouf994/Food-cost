@@ -451,6 +451,15 @@ def accesso():
     rimuove l'id utente dalla sessione
     reindirizza alla pagina principale
 """
+
+@app.route('/magazzino', methods=['POST', 'GET'])
+def dashboardMagazzino():
+
+    db=database.db()
+    infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
+
+    return render_template('giacienzeMagazzino.html', infoUtente=infoUtente)
+
 @app.route('/logout')
 def logOut():
     session.pop('userId', None)

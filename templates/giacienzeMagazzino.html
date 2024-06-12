@@ -37,10 +37,61 @@
         </div>
     </div>
 
-    <div class="menu1">
-        <div><a href="{{()}}">Aggiungi <b>NUOVO</b> elemento al magzzino</a></div><!--implementare controllo autorizzazione utente nel backend-->
-        
-    </div>
+    <nav class="navLaterale">
+        <ul>
+            <li><a href="{{(url_for('dashboardMagazzino'))}}">Magazzino</a></li>
+            <li><a href="{{(url_for('calcolaTot'))}}">Calcola costi menù</a></li>
+        </ul>
+    </nav>
 
+    <div class="container">
+        <div class="menu1">
+            
+                <button class="buttonButton" data-target="#buttonButton">Aggiungi elemento al magazzino</button>
+                <div id="buttonButton" class="buttonButton" style="display:none ;">
+                    <form action="{{('')}}" method="post" class="inserimentoDati">
+                        <label for="nomePiatto">Nome</label>
+                        <input type="text" id="nomePiatto" name="nome">
+
+                        <label for="nomePiatto">prezzo al kg</label>
+                        <input type="text" id="nomePiatto" name="prezzoKg">
+
+                        <label for="nomePiatto">prezzo unità</label>
+                        <input type="text" id="nomePiatto" name="prezzo">
+
+                        <label for="nomePiatto">Magazzino di riferimento</label>
+                        <input type="text" id="nomePiatto" name="magazzinoId">
+
+                        <label for="nomePiatto">Descrizione</label>
+                        <input type="text" id="nomePiatto" name="descrizione">
+
+                        <label for="nomePiatto">U.d.M.</label>
+                        <input type="text" id="nomePiatto" name="unita">
+
+                        <label for="nomePiatto">Quantità inserita</label>
+                        <input type="text" id="nomePiatto" name="quantita">
+
+                        <label for="nomePiatto">Codice</label>
+                        <input type="text" id="nomePiatto" name="cod">
+
+                        <label for="nomePiatto">Famiglia</label>
+                        <input type="text" id="nomePiatto" name="famiglia">
+
+                        <label for="nomePiatto">Sotto famiglia</label>
+                        <input type="text" id="nomePiatto" name="sottoFam">
+
+                        <label for="nomePiatto">Fornitore</label>
+                        <input type="text" id="nomePiatto" name="fornitore">
+
+                        <label for="nomePiatto">Codice fornitore</label>
+                        <input type="text" id="nomePiatto" name="codFornitore">
+
+                        <label for="nomePiatto">Ordine Minimo</label>
+                        <input type="text" id="nomePiatto" name="ordineMin">
+
+                    </form>
+                </div>
+        </div>
+    </div>
 </body>
 </html>
