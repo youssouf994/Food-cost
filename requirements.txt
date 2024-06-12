@@ -8,5 +8,5 @@ itsdangerous==2.1.2
 Jinja2==3.1.4
 MarkupSafe==2.1.5
 SQLite3-0611==0.0.1
-Werkzeug==3.0.1
+Werkzeug==3.0.3
 zipp==3.17.0
