@@ -171,7 +171,7 @@ class database:
     @staticmethod
     def aggiungi_ingrediente(db, tabella, idUtente, idPiatto, nome, prezzoKg, quanti, costo):
         """
-        Funzione per aggiungere un nuovo ingrediente al database.
+        Funzione per aggiungere un nuovo ingrediente al database (UTILE AL CALCOLO DEL COSTO PIATTO)
 
         Args:
             db (sqlite3.Connection): Connessione al database.
@@ -189,6 +189,32 @@ class database:
         try:
             cursore = db.cursor()
             cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzoKg, quantita, costo) VALUES (?, ?, ?, ?, ?, ?)", (idUtente, idPiatto, nome, prezzoKg, quanti, costo))
+            db.commit()
+        except Exception as e:
+            print("Si è verificato un errore:", e)
+            return render_template("index.html")
+        
+    @staticmethod
+    def aggiungi_ingrediente2(db, tabella, idUtente, nome, prezzoKg, quanti, costo):
+        """
+        Funzione per aggiungere un nuovo ingrediente al database (UTILE AL CALCOLO DEL COSTO PIATTO)
+
+        Args:
+            db (sqlite3.Connection): Connessione al database.
+            tabella (str): Nome della tabella in cui inserire il nuovo ingrediente.
+            idUtente (int): ID dell'utente.
+            idPiatto (int): ID del piatto a cui aggiungere l'ingrediente.
+            nome (str): Nome del nuovo ingrediente.
+            prezzoKg (float): Prezzo al kg del nuovo ingrediente.
+            quanti (float): Quantità del nuovo ingrediente.
+            costo (float): Costo totale del nuovo ingrediente.
+
+        Returns:
+            None
+        """
+        try:
+            cursore = db.cursor()
+            cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzoKg, quantita, costo) VALUES (?, ?, ?, ?, ?, ?)", (idUtente,  nome, prezzoKg, quanti, costo))
             db.commit()
         except Exception as e:
             print("Si è verificato un errore:", e)
@@ -312,7 +338,7 @@ class database:
 
             tot = 0
             for riga in risultati:
-                costo_ingrediente = riga[6]  # sesto elemento della tupla
+                costo_ingrediente = riga[7]  # sesto elemento della tupla
                 tot += float(costo_ingrediente)
 
             tot_arrotondato = round(tot, 3)

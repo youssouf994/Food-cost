@@ -1,3 +1,5 @@
+#from crypt import methods
+from tkinter.tix import INTEGER
 from flask import Flask, render_template, request, session, redirect, url_for
 from piatto import Piatto
 from calcoli import Calcoli
@@ -269,7 +271,7 @@ def modifica(sel, idP, selCol, idE):
             #nuovo=request.form.get('ingre') da eliminare
             database.modifica_elemento(db, session['userId'], idE, 'ingredienti', colonne[selCol], nuovo)
             elemento=database.visualizza_un_piatto(db, 'ingredienti', session['userId'], idE)
-            nuovo=Calcoli.prezzoGrammi(float(elemento[5]), float(elemento[4]))
+            nuovo=Calcoli.prezzoGrammi(float(elemento[6]), float(elemento[4]))
             database.modifica_elemento(db, session['userId'], idE, 'ingredienti', colonne[3], nuovo)
             database.sommaCosti_ingredienti(db, 'ingredienti', idP, session['userId'])
 
@@ -459,6 +461,27 @@ def dashboardMagazzino():
     infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
 
     return render_template('giacienzeMagazzino.html', infoUtente=infoUtente)
+
+@app.route('/magazzino', methods=['POST'])
+def aggiungiArticoloMagazzino():
+    idUtente=session['idUtente']
+    nome=request.form.get('nome')
+    prezzoKg=float(request.form.get('prezzoKg')) 
+    prezzo=float(request.form.get('prezzo')) 
+    magazzinoId=int(request.form.get('magazzinoId'))
+    descrizione=request.form.get('descrizione') 
+    unitaDiMisura=request.form.get('unita') 
+    quanti=float(request.form.get('quantita')) 
+    codice=request.form.get('cod') 
+    famiglia=request.form.get('famiglia')
+    sottoFamiglia=request.form.get('sottoFam') 
+    fornitore=request.form.get('fornitore') 
+    codFornitore=request.form.get('codFornitore') 
+    ordineMinimo=int(request.form.get('ordineMin')) 
+    
+    db=database.db()
+    
+    return redirect(url_for('dashboardMagazzino'))
 
 @app.route('/logout')
 def logOut():
