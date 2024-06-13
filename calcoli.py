@@ -9,5 +9,9 @@ class Calcoli:
         importo_iva = prezzo * (aliquota_iva / 100)
         prezzo_totale = prezzo + importo_iva
         return importo_iva, prezzo_totale
+    
+    @staticmethod
+    def foodCostPIATTO(sommaIngredientiPiatto, prezzoVenditaPiatto):
+        return (sommaIngredientiPiatto / prezzoVenditaPiatto) * 100
 
     

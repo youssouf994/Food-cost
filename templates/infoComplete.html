@@ -129,6 +129,18 @@
             </div>
 
         </div>
+
+        <div class="aggiungiPrezzo">
+            <form action="{{(url_for('visualizzaDashboardPiatto', idPiatto=piattiUtente[0]))}}" method="post">
+                <label for="prezzoAlimento">Prezzo di vendita</label>
+                <input type="text" id="prezzoAlimento" name="prezzoVendita">
+                <input type="submit" value="Aggiungi prezzo">
+            </form>
+        </div>
+
+        <div class="panoramicaPiatto">
+            <p>Percentuale Food Cost: {{ percentualeFoodCost }} %</p>
+        </div>
     </div>
 </body>
 </html>

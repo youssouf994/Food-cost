@@ -119,24 +119,57 @@ def calcolaTot():
 """
 @app.route('/visualizzaDashboardPiatto/<int:idPiatto>', methods=['POST', 'GET'])
 @login_required
-def visualizzaDashboardPiatto(idPiatto):
-    db=database.db()
-    #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
-    #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
+def visualizzaDashboardPiatto(idPiatto):    
+        db=database.db()
+        #idPiatto=database.idPiatto(db, 'piatti', session['userId'])
+        #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
 
-    #(db, nome tabella, id utente, id piatto)
-    piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
+        #(db, nome tabella, id utente, id piatto)
+        piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
     
-    #(db, nome tabella, id utente)
-    ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+        #(db, nome tabella, id utente)
+        ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
     
-    #(db, nome tabella, id utente)
-    infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
-    
-    #chiusura database
-    db.close()
-    return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente)
+        #(db, nome tabella, id utente)
+        infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
+        
+        prezzo=piattiUtente[4]
+        sommaCostoIngredienti=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
+        
+        if (prezzo==0) or (sommaCostoIngredienti==0):
+            percentualeFoodCost=0
+        else:
+            percentualeFoodCost=Calcoli.foodCostPIATTO(sommaCostoIngredienti, prezzo) 
+            
 
+    
+        if request.method=='GET':
+            db.close() #chiusura database
+        
+        elif request.method=='POST':
+            prezzoVendita=(request.form.get('prezzoVendita'))
+            
+            prezzo=float(prezzoVendita)
+            prezzo=round(prezzo, 3)
+            
+        
+        
+            database.aggiungi_prezzoVendita(db, 'piatti', prezzoVendita, idPiatto)
+        
+            db.close()
+        
+        return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente, percentualeFoodCost=percentualeFoodCost)
+
+@app.route('/visualizzaDashboardPiatto', methods=['POST', 'GET'])
+@login_required
+def inserisciPrezzoVendita():
+    if request.method=='POST':
+        prezzoVendita=request.form.get('prezzoVendita')
+        db=database.db()
+        
+        database.aggiungi_prezzoVendita(db, 'piatti', prezzoVendita)
+        
+        db.close()
 """
     la funzione permette all'utente di aggiungere un nuovo piatto alla sua collezione
     
@@ -170,7 +203,7 @@ def nuovoPiatto():
         idU=session['userId']
 
         db=database.db()
-        database.aggiungi_piatto(db, 'piatti', idU, nome, 0)
+        database.aggiungi_piatto(db, 'piatti', idU, nome, 0, 0)
         db.close()
     
     return redirect(url_for('calcolaTot'))

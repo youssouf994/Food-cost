@@ -147,7 +147,7 @@ class database:
             return True
 
     @staticmethod
-    def aggiungi_piatto(db_ram, tabella, idUte, nome, costo):
+    def aggiungi_piatto(db_ram, tabella, idUte, nome, costo, prezzoVendita):
         """
         Funzione per aggiungere un nuovo piatto al database.
 
@@ -163,7 +163,30 @@ class database:
         """
         try:
             cursore = db_ram.cursor()
-            cursore.execute(f"INSERT INTO {tabella} (idUtente, nome, costo) VALUES (?, ?, ?)", (idUte, nome, costo))
+            cursore.execute(f"INSERT INTO {tabella} (idUtente, nome, costo, prezzoVendita) VALUES (?, ?, ?, ?)", (idUte, nome, costo, prezzoVendita))
+            db_ram.commit()
+        except Exception as e:
+            return render_template("errore.html")
+        
+    @staticmethod
+    def aggiungi_prezzoVendita(db_ram, tabella, prezzoVendita, idPiatto):
+        colonna='prezzoVendita'
+        """
+        Funzione per aggiungere un nuovo piatto al database.
+
+        Args:
+            db_ram (sqlite3.Connection): Connessione al database.
+            tabella (str): Nome della tabella in cui inserire il nuovo piatto.
+            idUte (int): ID dell'utente.
+            nome (str): Nome del nuovo piatto.
+            costo (float): Costo del nuovo piatto.
+
+        Returns:
+            None
+        """
+        try:
+            cursore = db_ram.cursor()
+            cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE piattoId=?", (prezzoVendita, idPiatto))
             db_ram.commit()
         except Exception as e:
             return render_template("errore.html")

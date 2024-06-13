@@ -34,7 +34,8 @@ CREATE TABLE piatti
 	piattoId INTEGER PRIMARY KEY AUTOINCREMENT,
     idUtente INT,
 	nome TEXT,
-    costo DECIMAL (10, 4)
+    costo DECIMAL (10, 4),
+    prezzoVendita DECIMAL (10, 4)
     /*
     tabella che racchiude i piatti composti da vari ingredienti ed oggetti, degli utenti iscritti al servizio
 
