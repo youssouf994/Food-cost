@@ -133,13 +133,7 @@ def visualizzaDashboardPiatto(idPiatto):
         #(db, nome tabella, id utente)
         infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
         
-        prezzo=piattiUtente[4]
-        sommaCostoIngredienti=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
-        
-        if (prezzo==0) or (sommaCostoIngredienti==0):
-            percentualeFoodCost=0
-        else:
-            percentualeFoodCost=Calcoli.foodCostPIATTO(sommaCostoIngredienti, prezzo) 
+        percentualeFoodCost=piattiUtente[5]
             
 
     
@@ -154,22 +148,32 @@ def visualizzaDashboardPiatto(idPiatto):
             
         
         
-            database.aggiungi_prezzoVendita(db, 'piatti', prezzoVendita, idPiatto)
+            database.aggiungi_prezzoVendita(db, 'piatti', prezzo, idPiatto)
         
             db.close()
         
         return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente, percentualeFoodCost=percentualeFoodCost)
 
-@app.route('/visualizzaDashboardPiatto', methods=['POST', 'GET'])
+@app.route('/calcolaFoodCost/<int:idPiatto>', methods=['POST', 'GET'])
 @login_required
-def inserisciPrezzoVendita():
+def calcolaFoodCost(idPiatto):
     if request.method=='POST':
-        prezzoVendita=request.form.get('prezzoVendita')
         db=database.db()
         
-        database.aggiungi_prezzoVendita(db, 'piatti', prezzoVendita)
+        piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
         
+        prezzo=piattiUtente[4]
+        sommaCostoIngredienti=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
+        
+        if (prezzo==0) or (sommaCostoIngredienti==0):
+            percentualeFoodCost=0
+            database.aggiungi_percentualeFoodCost(db, 'piatti', percentualeFoodCost, idPiatto)
+        else:
+            percentualeFoodCost=round(Calcoli.foodCostPIATTO(sommaCostoIngredienti, prezzo), 3)
+            database.aggiungi_percentualeFoodCost(db, 'piatti', percentualeFoodCost, idPiatto)
+
         db.close()
+        return redirect(url_for('visualizzaDashboardPiatto', idPiatto=idPiatto))
 """
     la funzione permette all'utente di aggiungere un nuovo piatto alla sua collezione
     

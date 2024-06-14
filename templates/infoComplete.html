@@ -43,11 +43,11 @@
     </nav>
     
     <div class="container">
-        <h1>Piatti salvati</h1>
+        
         <div class="fondoForm">
 
             <div class="piattoSingolo">
-                <p>Nome Piatto: {{piattiUtente[2]}}</p>
+                <h1>Nome Piatto: {{piattiUtente[2]}}</h1>
                 <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
 
                 <div class="tab">
@@ -58,46 +58,44 @@
                 APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
                     <div class="tab2">
                         <div class="infoIn">
-                            <div ="">
+                            <div class="singoloIngrediente">
                                 <p>
-                                    IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
-                                    PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b><br>
-                                    QUANTITA'': <b>{{ingredientiUtente[6]}}</b>  <br>
-                                    COSTO: <b>{{ingredientiUtente[7]}}</b>
+                                    <p>IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
+                                    <p>PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b> €<br>
+                                    <p>QUANTITa': <b>{{ingredientiUtente[6]}}</b> grammi<br>
+                                    <p>COSTO: <b>{{ingredientiUtente[7]}}</b> €
                                     <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
                                 </p>
+
+                                <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0]))}}" method="post">
+                                        <label for="ingre">Nuovo Alimento</label>
+                                        <input type="text" name="nuovo" />
+                                        <input type="submit" value="Modifica" />
+                                    </form>
+                                    <br />
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0]))}}" method="post">
+                                        <label for="ingre">Nuovo Prezzo</label>
+                                        <input type="text" name="nuovo" />
+                                        <input type="submit" value="Modifica" />
+                                    </form>
+                                    <br />
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0]))}}" method="post">
+                                        <label for="ingre">Nuovo Quantita''</label>
+                                        <input type="text" name="nuovo" />
+                                        <input type="submit" value="Modifica" />
+                                    </form>
+                                    <br />
+
+
+                                    <form action="{{('/cancellaXy')}}" method="post">
+                                        <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
+                                        <input type="submit" value="Cancella Ingrediente" />
+                                    </form>
+                                </div>
                             </div>
 
                         </div>
-
-                        <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
-                            <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0]))}}" method="post">
-                                <label for="ingre">Nuovo Alimento</label>
-                                <input type="text" name="nuovo" />
-                                <input type="submit" value="Modifica" />
-                            </form>
-                            <br />
-                            <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0]))}}" method="post">
-                                <label for="ingre">Nuovo Prezzo</label>
-                                <input type="text" name="nuovo" />
-                                <input type="submit" value="Modifica" />
-                            </form>
-                            <br />
-                            <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0]))}}" method="post">
-                                <label for="ingre">Nuovo Quantita''</label>
-                                <input type="text" name="nuovo" />
-                                <input type="submit" value="Modifica" />
-                            </form>
-                            <br />
-
-
-                            <form action="{{('/cancellaXy')}}" method="post">
-                                <input type="hidden" name="nomeI" value="{{ingredientiUtente[3]}}" />
-                                <input type="submit" value="Cancella Ingrediente" />
-                            </form>
-                        </div>
-
-
 
                     </div>
                     {% endif %}
@@ -130,16 +128,24 @@
 
         </div>
 
-        <div class="aggiungiPrezzo">
-            <form action="{{(url_for('visualizzaDashboardPiatto', idPiatto=piattiUtente[0]))}}" method="post">
-                <label for="prezzoAlimento">Prezzo di vendita</label>
-                <input type="text" id="prezzoAlimento" name="prezzoVendita">
-                <input type="submit" value="Aggiungi prezzo">
-            </form>
-        </div>
-
         <div class="panoramicaPiatto">
-            <p>Percentuale Food Cost: {{ percentualeFoodCost }} %</p>
+            <div class="aggiungiPrezzo">
+                <form action="{{(url_for('visualizzaDashboardPiatto', idPiatto=piattiUtente[0]))}}" method="post">
+                    <label for="prezzoAlimento">Prezzo di vendita</label>
+                    <input type="text" id="prezzoAlimento" name="prezzoVendita">
+                    <input type="submit" value="Aggiungi prezzo">
+                </form>
+            </div>
+
+            <div class="foodCost">
+                <p>Food Cost del piatto: {{ percentualeFoodCost }} %</p>
+
+                <div>
+                    <form action="{{(url_for('calcolaFoodCost', idPiatto=piattiUtente[0]))}}" method="post">
+                        <input type="submit" value="Calcola">
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </body>

@@ -190,6 +190,32 @@ class database:
             db_ram.commit()
         except Exception as e:
             return render_template("errore.html")
+        
+
+    @staticmethod
+    def aggiungi_percentualeFoodCost(db_ram, tabella, percentuale, idPiatto):
+        colonna='percentualeFoodCost'
+        """
+        Funzione per aggiungere un nuovo piatto al database.
+
+        Args:
+            db_ram (sqlite3.Connection): Connessione al database.
+            tabella (str): Nome della tabella in cui inserire il nuovo piatto.
+            idUte (int): ID dell'utente.
+            nome (str): Nome del nuovo piatto.
+            costo (float): Costo del nuovo piatto.
+
+        Returns:
+            None
+        """
+        try:
+            cursore = db_ram.cursor()
+            cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE piattoId=?", (percentuale, idPiatto))
+            db_ram.commit()
+        except Exception as e:
+            return render_template("errore.html")
+        
+
 
     @staticmethod
     def aggiungi_ingrediente(db, tabella, idUtente, idPiatto, nome, prezzoKg, quanti, costo):

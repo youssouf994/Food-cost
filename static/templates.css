@@ -16,8 +16,20 @@
 }
 
 
+.panoramicaPiatto {
+    display: flex;
+    flex-flow:row;
+    padding:3%;
+    top:6%;
+    gap:4%;
+}
 
-.navLaterale {
+.singoloIngrediente {
+    
+    
+}
+
+    .navLaterale {
     width: 12%;
     background: linear-gradient(to right, cornflowerblue, white);
     color: white;
@@ -48,6 +60,16 @@ navLaterale.a
 }
 
 
+.tab {
+    box-shadow: 0px 15px 10px -10px #dedede; /* Effetto di sollevamento */
+    -moz-box-shadow: 0px 15px 10px -10px #dedede;
+    -webkit-box-shadow: 0px 15px 10px -10px #dedede;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Tre colonne di larghezza flessibile */
+    grid-template-rows: repeat(25%); /* Due righe con altezza fissa */
+    gap: 4%; 
+    margin:4%;
+}
 
 .piattoSingolo
 {
@@ -126,7 +148,7 @@ navLaterale.a
 
 
 /* Stili per il contenitore info_ute */
-.info_ute {
+    .info_ute {
     background-color: #ffffff;
     padding: 10px;
     border-radius: 5px;
@@ -150,22 +172,13 @@ navLaterale.a
     flex-direction:row;
 }
 
-.tab2 
-{
-    
-}
+
 /* Stili per il contenitore fondoForm */
 .fondoForm {
     position: relative;
     background-color: #ffffff;
-    padding: 20px;
-    box-shadow: 0px 15px 10px -10px #dedede; /* Effetto di sollevamento */
-    -moz-box-shadow: 0px 15px 10px -10px #dedede;
-    -webkit-box-shadow: 0px 15px 10px -10px #dedede;
-    display: grid;
-    grid-template-columns: repeat(3, 30%); /* Tre colonne di larghezza flessibile */
-    grid-template-rows: repeat(25%); /* Due righe con altezza fissa */
-    gap: 4%; /* Spazio tra le colonne e le righe */
+    padding: 2%;
+    
 }
 
 .piatti {

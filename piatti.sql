@@ -35,7 +35,8 @@ CREATE TABLE piatti
     idUtente INT,
 	nome TEXT,
     costo DECIMAL (10, 4),
-    prezzoVendita DECIMAL (10, 4)
+    prezzoVendita DECIMAL (10, 4),
+    percentualeFoodCost DECIMAL (10, 4)
     /*
     tabella che racchiude i piatti composti da vari ingredienti ed oggetti, degli utenti iscritti al servizio
 
