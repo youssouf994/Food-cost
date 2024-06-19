@@ -357,6 +357,21 @@ def modifica(sel, idP, selCol, idE, udm):
             database.modifica_elemento(db, session['userId'], idE, 'oggetti', 'costoQuantita', nuovo)
             database.sommaCosti_ingredienti(db, 'oggetti', idP, session['userId'], idE)
             
+        elif sel==5:
+            database.modifica_elemento(db, session['userId'], idE, 'oggetti', colonne[selCol], nuovo)
+            elemento=database.visualizza_un_piatto(db, 'oggetti', session['userId'], idE)
+            prezzo=float(elemento[4])
+            nuovo=float(nuovo)
+            if udm=='grammi':
+                nuovo=Calcoli.prezzoGrammi(nuovo, prezzo)
+            elif udm=='pezzi':
+                nuovo*=prezzo
+            elif udm=='no':
+                return
+
+            database.modifica_elemento(db, session['userId'], idE, 'oggetti', 'costoQuantita', nuovo)
+            database.sommaCosti_ingredienti(db, 'oggetti', idP, session['userId'], idE)
+            
 
         #piatto.setNome(nome)    
         #da aggiungere modifica specifica ad un solo oggetto dell'array
@@ -396,6 +411,7 @@ def cancellaPiatto():
     idPia=database.idPiatto(db, 'piatti', nome, session['userId'])
 
     ingreElimina=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
+    oggetElimina=database.visualizza_tutti_piatti(db, 'oggetti', session['userId'])
     
     for e in ingreElimina:
         if e[2] ==idPia[0]:
@@ -427,7 +443,6 @@ def cancellaPiatto():
 @app.route('/cancellaXy', methods=['GET', 'POST'])
 @login_required
 def cancellaIngre():
-    tot=0
     nome=request.form.get('nomeI')
 
     db=database.db()
