@@ -24,12 +24,24 @@
     gap:4%;
 }
 
-.singoloIngrediente {
-    
+.inserimento {
+    display: grid;
+    margin: 2%;
+    grid-template-columns: repeat(2, 1fr); /* Tre colonne di larghezza flessibile */
+    gap: 4%;
+}
+
+.inserimentoIngredienti
+{
     
 }
 
-    .navLaterale {
+.inserimentoOggetti
+{
+    
+}
+
+.navLaterale {
     width: 12%;
     background: linear-gradient(to right, cornflowerblue, white);
     color: white;

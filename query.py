@@ -45,6 +45,10 @@ class database:
         elif tabella == 'utenti':
             cursore.execute(f"SELECT * FROM {tabella} WHERE id_utente=?", (idUte,))
             piatti = cursore.fetchone()
+        elif tabella=='oggetti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE idUtente=?", (idUte,))
+            piatti = cursore.fetchall()
+            
 
         return piatti
 
@@ -72,6 +76,9 @@ class database:
             elemento = cursore.fetchone()
         elif tabella == 'utenti':
             cursore.execute(f"SELECT * FROM {tabella} WHERE id_utente=?", (idUte,))
+            elemento = cursore.fetchone()
+        elif tabella=='oggetti':
+            cursore.execute(f"SELECT * FROM {tabella} WHERE oggettoId=?", (idEle,))
             elemento = cursore.fetchone()
 
         return elemento
@@ -135,6 +142,9 @@ class database:
                 db_ram.commit()
             elif tabella == 'ingredienti':
                 cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE ingredienteId=?", (nuovo, idSpecifico))
+                db_ram.commit()
+            elif tabella=='oggetti':
+                cursore.execute(f"UPDATE {tabella} SET {colonna}=? WHERE oggettoId=?", (nuovo, idSpecifico))
                 db_ram.commit()
 
             
@@ -218,7 +228,7 @@ class database:
 
 
     @staticmethod
-    def aggiungi_ingrediente(db, tabella, idUtente, idPiatto, nome, prezzoKg, quanti, costo):
+    def aggiungi_ingrediente(db, tabella, idUtente, idPiatto, nome, prezzoKg, quanti, costo, udm):
         """
         Funzione per aggiungere un nuovo ingrediente al database (UTILE AL CALCOLO DEL COSTO PIATTO)
 
@@ -235,13 +245,24 @@ class database:
         Returns:
             None
         """
-        try:
-            cursore = db.cursor()
-            cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzoKg, quantita, costo) VALUES (?, ?, ?, ?, ?, ?)", (idUtente, idPiatto, nome, prezzoKg, quanti, costo))
-            db.commit()
-        except Exception as e:
-            print("Si è verificato un errore:", e)
-            return render_template("index.html")
+        
+        if tabella=='ingredienti':
+            try:
+                cursore = db.cursor()
+                cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzoKg, quantita, costo) VALUES (?, ?, ?, ?, ?, ?)", (idUtente, idPiatto, nome, prezzoKg, quanti, costo))
+                db.commit()
+            except Exception as e:
+                print("Si è verificato un errore:", e)
+                return render_template("index.html")
+            
+        elif tabella=='oggetti':
+            try:
+                cursore = db.cursor()
+                cursore.execute(f"INSERT INTO {tabella} (idUtente, idPiatto, nome, prezzo, quantita, costoQuantita, unitaDiMisura) VALUES (?, ?, ?, ?, ?, ?, ?)", (idUtente, idPiatto, nome, prezzoKg, quanti, costo, udm))
+                db.commit()
+            except Exception as e:
+                print("Si è verificato un errore:", e)
+                return render_template("index.html")
         
     @staticmethod
     def aggiungi_ingrediente2(db, tabella, idUtente, nome, prezzoKg, quanti, costo):
@@ -318,6 +339,7 @@ class database:
         Returns:
             tuple: ID del piatto se trovato, altrimenti None.
         """
+        
         try:
             cursore = db.cursor()
             cursore.execute(f"SELECT * FROM {tabella} WHERE nome=? AND idUtente=?", (nome, idUte))
@@ -332,6 +354,7 @@ class database:
 
         except Exception as e:
             print("Si è verificato un errore:", e)
+        
 
     @staticmethod
     def idIngre(db, tabella, nome, id):
@@ -363,7 +386,7 @@ class database:
             print("Si è verificato un errore:", e)
 
     @staticmethod
-    def sommaCosti_ingredienti(db, tabella, idPiatto, idUte):
+    def sommaCosti_ingredienti(db, tabella, idPiatto, idUte, idOggetto):
         """
         Funzione per calcolare la somma dei costi degli ingredienti di un piatto e aggiornare il costo totale nel database.
 
@@ -380,20 +403,41 @@ class database:
             float: Totale dei costi degli ingredienti arrotondato a 3 decimali.
         """
         try:
-   
-            cursore = db.cursor()
-            cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto=? AND idUtente=?", (idPiatto, idUte))
-            risultati = cursore.fetchall()
+            if tabella=='ingredienti':
+                cursore = db.cursor()
+                cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto=? AND idUtente=?", (idPiatto, idUte))
+                risultati = cursore.fetchall()
+            
+                tot = 0
+                for riga in risultati:
+                    costo_ingrediente = riga[7]  # sesto elemento della tupla
+                    tot += float(costo_ingrediente)
+                    totArrotondato=round(tot, 3)
 
-            tot = 0
-            for riga in risultati:
-                costo_ingrediente = riga[7]  # sesto elemento della tupla
-                tot += float(costo_ingrediente)
-
-            tot_arrotondato = round(tot, 3)
-            cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (tot_arrotondato, idPiatto))
+            elif tabella=='oggetti':
+                cursore = db.cursor()
+                cursore.execute(f"SELECT * FROM {tabella} WHERE oggettoId=? AND idUtente=?", (idOggetto, idUte))
+                risultati = cursore.fetchall()
+            
+                tot = 0
+                for riga in risultati:
+                    costo_ingrediente = riga[6]  # sesto elemento della tupla
+                    tot += float(costo_ingrediente)
+                    totArrotondato=round(tot, 3)
+ 
+            if tabella=='ingredienti':
+                cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (totArrotondato, idPiatto))                
+            elif tabella=='oggetti':
+                tabella='piatti'
+                cursore.execute(f"SELECT * FROM {tabella} WHERE piattoId=?", (idPiatto,))
+                elemento = cursore.fetchone()
+                tot_piatto=float(elemento[3])
+                totArrotondato+=tot_piatto
+                
+                cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (totArrotondato, idPiatto))
+                
             db.commit()
-            return tot
+            return totArrotondato
 
         except Exception as e:
             print("Si è verificato un errore:", e)

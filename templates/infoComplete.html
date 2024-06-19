@@ -45,42 +45,110 @@
     <div class="container">
         
         <div class="fondoForm">
+            <h1>Nome Piatto: {{piattiUtente[2]}}</h1>
+            <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+
+            <div class="panoramicaPiatto">
+                <div class="panoramicaPiatto1">
+                    <form action="{{(url_for('visualizzaDashboardPiatto', idPiatto=piattiUtente[0]))}}" method="post">
+                        <label for="prezzoAlimento">Prezzo di vendita</label>
+                        <input type="text" id="prezzoAlimento" name="prezzoVendita">
+                        <input type="submit" value="Aggiungi prezzo">
+                    </form>
+
+                    <form action="{{(url_for('calcolaFoodCost', idPiatto=piattiUtente[0]))}}" method="post">
+                        <input type="submit" value="Calcola Food Cost">
+                    </form>
+                    <p>Food Cost del piatto: {{ percentualeFoodCost }} %</p>
+                    <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
+                </div>
+
+                <!--<div class="panoramicaPiatto1">
+                    
+                </div>-->
+
+            </div>
+
+            <div class="inserimento">
+                <div class="inserimentoIngredienti">
+                    <form action="{{(url_for('aggiungiIngre', strada=0))}}" method="post">
+                        <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+                        <label for="nomeAlimento">Alimento</label>
+                        <input type="text" id="nomeAlimento" name="nomeAlimento">
+                        <br>
+
+                        <label for="prezzoAlKg">Prezzo al Kg</label>
+                        <input type="text" id="prezzoAlKg" name="prezzoAlKg">
+                        <br>
+
+                        <label for="quantita">Grammi inseriti</label>
+                        <input type="text" id="quantita" name="quantita">
+                        <br>
+
+                        <input type="submit" value="aggiungi">
+                        <input type="reset" value="resetta campi">
+                    </form>
+                </div>
+
+                <div class="inserimentoOggetti">
+                    <form action="{{(url_for('aggiungiIngre', strada=1))}}" method="post">
+                        <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+                        <label for="nomeAlimento">Oggetto</label>
+                        <input type="text" id="nomeAlimento" name="nomeOggetto">
+                        <br>
+
+                        <label for="prezzoAlKg">Prezzo al Kg</label>
+                        <input type="radio" id="radioKg" name="prezzo" value="0">
+
+                        <label for="prezzoAlPz">Prezzo al Pezzo</label>
+                        <input type="radio" id="radioPz" name="prezzo" value="1">
+                        <input type="text" style="margin-left:2%;" id="nomeAlimento" name="prezzoOggetto">
+                        <br>
+
+                        <label for="quantita">Grammi inseriti</label>
+                        <input type="text" id="quantita" name="quantita">
+                        <br>
+
+                        <input type="submit" value="aggiungi">
+                        <input type="reset" value="resetta campi">
+                    </form>
+                </div>
+            </div>
 
             <div class="piattoSingolo">
-                <h1>Nome Piatto: {{piattiUtente[2]}}</h1>
-                <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
 
                 <div class="tab">
                     {% for ingredientiUtente in ingredientiUtente %}
 
                     {% if piattiUtente[0]== ingredientiUtente[2] %}
                     <!--TUTTI I COMMENTI NELLA CLASSE TAB 2 SONO LE MODIFICHE DEI VARI PARAMETRI
-                APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
+    APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
                     <div class="tab2">
                         <div class="infoIn">
                             <div class="singoloIngrediente">
                                 <p>
-                                    <p>IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
-                                    <p>PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b> €<br>
-                                    <p>QUANTITa': <b>{{ingredientiUtente[6]}}</b> grammi<br>
-                                    <p>COSTO: <b>{{ingredientiUtente[7]}}</b> €
+                                <p>IGREDIENTE: <b>{{ingredientiUtente[3]}}</b><br>
+                                <p>PREZZO AL Kg: <b>{{ingredientiUtente[4]}}</b> €<br>
+                                <p>QUANTITA': <b>{{ingredientiUtente[6]}}</b> grammi<br>
+                                <p>
+                                    COSTO: <b>{{ingredientiUtente[7]}}</b> €
                                     <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
                                 </p>
 
                                 <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
-                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0]))}}" method="post">
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0], udm='no'))}}" method="post">
                                         <label for="ingre">Nuovo Alimento</label>
                                         <input type="text" name="nuovo" />
                                         <input type="submit" value="Modifica" />
                                     </form>
                                     <br />
-                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0]))}}" method="post">
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=1, idE=ingredientiUtente[0], udm='no'))}}" method="post">
                                         <label for="ingre">Nuovo Prezzo</label>
                                         <input type="text" name="nuovo" />
                                         <input type="submit" value="Modifica" />
                                     </form>
                                     <br />
-                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0]))}}" method="post">
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=ingredientiUtente[0], udm='no'))}}" method="post">
                                         <label for="ingre">Nuovo Quantita''</label>
                                         <input type="text" name="nuovo" />
                                         <input type="submit" value="Modifica" />
@@ -101,50 +169,60 @@
                     {% endif %}
 
                     {% endfor %}
+
+                    {% for oggettiUtente in oggettiUtente %}
+
+                    {% if piattiUtente[0]== oggettiUtente[2] %}
+                    <!--TUTTI I COMMENTI NELLA CLASSE TAB 2 SONO LE MODIFICHE DEI VARI PARAMETRI
+    APPENA CREATO PANNELLO A SCOMPARSA SOPNO DA REINTEGRARE-->
+                    <div class="tab2">
+                        <div class="infoIn">
+                            <div class="singoloIngrediente">
+                                <p>
+                                <p>OGGETTO: <b>{{oggettiUtente[3]}}</b><br>
+                                <p>PREZZO AL {% if oggettiUtente[8] == 'pezzi' %} pezzo{% else %} kg{% endif %}: <b>{{ oggettiUtente[4] }}</b> €<br></p>
+                                <p>QUANTITA': <b>{{ oggettiUtente[5] }}</b>{% if oggettiUtente[8] == 'pezzi' %} pezzi{% else %} grammi{% endif %}</p>
+                                <p>
+                                    COSTO: <b>{{oggettiUtente[6]}}</b> €
+                                    <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
+                                </p>
+
+                                <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
+                                    <form action="{{(url_for('modifica', sel=3, idP=piattiUtente[0], selCol=0, idE=oggettiUtente[0], udm='no'))}}" method="post">
+                                        <label for="ingre">Nuovo Alimento</label>
+                                        <input type="text" name="nuovo" />
+                                        <input type="submit" value="Modifica" />
+                                    </form>
+                                    <br />
+                                    <form action="{{(url_for('modifica', sel=4, idP=piattiUtente[0], selCol=4, idE=oggettiUtente[0], udm=oggettiUtente[8]))}}" method="post">
+                                        <label for="ingre">Nuovo Prezzo</label>
+                                        <input type="text" name="nuovo" />
+                                        <input type="submit" value="Modifica" />
+                                    </form>
+                                    <br />
+                                    <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=2, idE=oggettiUtente[0], udm='no'))}}" method="post">
+                                        <label for="ingre">Nuovo Quantita''</label>
+                                        <input type="text" name="nuovo" />
+                                        <input type="submit" value="Modifica" />
+                                    </form>
+                                    <br />
+
+
+                                    <form action="{{('/cancellaXy')}}" method="post">
+                                        <input type="hidden" name="nomeI" value="{{oggettiUtente[0]}}" />
+                                        <input type="submit" value="Cancella Ingrediente" />
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    {% endif %}
+
+                    {% endfor %}
                 </div>
 
-
-                <form action="{{('/nuovoIngrediente')}}" method="post">
-                    <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
-                    <label for="nomeAlimento">Alimento</label>
-                    <input type="text" id="nomeAlimento" name="nomeAlimento">
-                    <br>
-
-                    <label for="prezzoAlKg">Prezzo al Kg</label>
-                    <input type="text" id="prezzoAlKg" name="prezzoAlKg">
-                    <br>
-
-                    <label for="quantita">Quantita inserita</label>
-                    <input type="text" id="quantita" name="quantita">
-                    <br>
-
-                    <input type="submit" value="aggiungi">
-                    <input type="reset" value="resetta campi">
-                </form>
-
-                <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
-
-            </div>
-
-        </div>
-
-        <div class="panoramicaPiatto">
-            <div class="aggiungiPrezzo">
-                <form action="{{(url_for('visualizzaDashboardPiatto', idPiatto=piattiUtente[0]))}}" method="post">
-                    <label for="prezzoAlimento">Prezzo di vendita</label>
-                    <input type="text" id="prezzoAlimento" name="prezzoVendita">
-                    <input type="submit" value="Aggiungi prezzo">
-                </form>
-            </div>
-
-            <div class="foodCost">
-                <p>Food Cost del piatto: {{ percentualeFoodCost }} %</p>
-
-                <div>
-                    <form action="{{(url_for('calcolaFoodCost', idPiatto=piattiUtente[0]))}}" method="post">
-                        <input type="submit" value="Calcola">
-                    </form>
-                </div>
             </div>
         </div>
     </div>

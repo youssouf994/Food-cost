@@ -81,16 +81,14 @@ def calcolaTot():
     #tot2=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
 
     #(database, nome tabella db, id dell'utente nelle tabelle)
+    #RACCOLTA DEI DATI RELATIVI ALL'UTENTE
     piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
-    
-    #(database, nome tabella db, id dell'utente nelle tabelle)
+    oggettiUtente=database.visualizza_tutti_piatti(db,'oggetti', session['userId'])
     ingredientiUtente=database.visualizza_tutti_piatti(db, 'ingredienti', session['userId'])
-    
-    #(database, nome tabella db, id dell'utente nelle tabelle)
     infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
     
     db.close()
-    return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente, infoUtente=infoUtente)
+    return render_template('calcolaPrezzo.html', piattiUtente=piattiUtente, ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, oggettiUtente=oggettiUtente)
 
 """
     INFO COMPLETE DI UN SOLO PIATTO SELEZIONATO DA CALCOLAPREZZO.HTML
@@ -132,7 +130,7 @@ def visualizzaDashboardPiatto(idPiatto):
     
         #(db, nome tabella, id utente)
         infoUtente=database.visualizza_tutti_piatti(db, 'utenti', session['userId'])
-        
+        oggettiUtente=database.visualizza_tutti_piatti(db,'oggetti', session['userId'])
         percentualeFoodCost=piattiUtente[5]
             
 
@@ -152,7 +150,7 @@ def visualizzaDashboardPiatto(idPiatto):
         
             db.close()
         
-        return render_template('infoComplete.html', ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente, percentualeFoodCost=percentualeFoodCost)
+        return render_template('infoComplete.html', oggettiUtente=oggettiUtente, ingredientiUtente=ingredientiUtente, infoUtente=infoUtente, piattiUtente=piattiUtente, percentualeFoodCost=percentualeFoodCost)
 
 @app.route('/calcolaFoodCost/<int:idPiatto>', methods=['POST', 'GET'])
 @login_required
@@ -163,7 +161,7 @@ def calcolaFoodCost(idPiatto):
         piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
         
         prezzo=piattiUtente[4]
-        sommaCostoIngredienti=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'])
+        sommaCostoIngredienti=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'], None)
         
         if (prezzo==0) or (sommaCostoIngredienti==0):
             percentualeFoodCost=0
@@ -234,40 +232,70 @@ def nuovoPiatto():
     ritorna la funzione calcolaTot
 """
 
-@app.route('/nuovoIngrediente', methods=['POST', 'GET'])
+@app.route('/nuovoIngrediente/<int:strada>', methods=['POST', 'GET'])
 @login_required
-def aggiungiIngre():
+def aggiungiIngre(strada):
     try:
-        nomePiatto=str(request.form.get('nomeP'))
-        ingrediente=request.form.get('nomeAlimento')
-        prezzoKg=float(request.form.get('prezzoAlKg'))
-        quanti=float(request.form.get('quantita'))
-        tot=0
-        prezzo=round(Calcoli.prezzoGrammi(quanti, prezzoKg), 3)
-
         db=database.db()
-        idPiatto=database.idPiatto(db, 'piatti', nomePiatto, session['userId'])
+        if strada==0:
+                nomePiatto=str(request.form.get('nomeP'))
+                ingrediente=request.form.get('nomeAlimento')
+                prezzoKg=float(request.form.get('prezzoAlKg'))
+                quanti=float(request.form.get('quantita'))
+                tot=0
+                prezzo=round(Calcoli.prezzoGrammi(quanti, prezzoKg), 3)
+
+                
+                idPiatto=database.idPiatto(db, 'piatti', nomePiatto, session['userId'])
     
-        database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto[0], ingrediente, prezzoKg, quanti, prezzo)
+                database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto[0], ingrediente, prezzoKg, quanti, prezzo, None)
     
 
-        database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto[0], session['userId'])
+                database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto[0], session['userId'], None)
+                
   
-        #piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
-        #for piattoIdenti in piattiUtente:
-            #if piattoIdenti.getNome()==nomePiatto:
-              #  piattoIdenti.aggiungiIngrediente(ingrediente, prezzoKg, quanti)  
-                #break    
-            #tot=piattoIdenti.sommaCosti()
+                #piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
+                #for piattoIdenti in piattiUtente:
+                    #if piattoIdenti.getNome()==nomePiatto:
+                      #  piattoIdenti.aggiungiIngrediente(ingrediente, prezzoKg, quanti)  
+                        #break    
+                    #tot=piattoIdenti.sommaCosti()
+                #del db
+  
+        elif strada==1:
+            
+            nomePiatto=str(request.form.get('nomeP'))
+            nomeOggetto=str(request.form.get('nomeOggetto'))
+            costoOggetto=float(request.form.get('prezzoOggetto'))
+            quanti=float(request.form.get('quantita'))
+            stradaL2=request.form.get('prezzo')
+            
+            tot=0
+            if stradaL2=='0':
+                prezzo=Calcoli.prezzoGrammi(quanti, costoOggetto)
+                udm='grammi'
+            elif stradaL2=='1':
+                prezzo=costoOggetto*quanti
+                prezzo=round(prezzo, 3)
+                udm='pezzi'
+
+            idPiatto=database.idPiatto(db, 'piatti', nomePiatto, session['userId'])
+            
+    
+            database.aggiungi_ingrediente(db, 'oggetti', session['userId'], idPiatto[0], nomeOggetto, costoOggetto, quanti, prezzo, udm)
+            
+            idOggetto=database.idPiatto(db, 'oggetti', nomeOggetto, session['userId'])
+            database.sommaCosti_ingredienti(db, 'oggetti', idPiatto[0], session['userId'], idOggetto[0])
         
-        
-        db.close()
-        #del db
-        
-        return redirect(url_for('calcolaTot'))
-        #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
+
     except  Exception as e:
         return render_template("errore.html", e=e)
+    
+    finally:
+        db.close()    
+        return redirect(url_for('calcolaTot'))
+        #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
+        
     
 
 """
@@ -289,13 +317,12 @@ def aggiungiIngre():
     ritorna la funzione calcolaTot
 """
     
-@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>/<int:idE>', methods=['POST', 'GET'])
+@app.route('/modifica/<int:sel>/<int:idP>/<int:selCol>/<int:idE>/<string:udm>', methods=['POST', 'GET'])
 @login_required
-def modifica(sel, idP, selCol, idE):
-    colonne=['nome', 'prezzoKg', 'quantita', 'costo']
+def modifica(sel, idP, selCol, idE, udm):
+    colonne=['nome', 'prezzoKg', 'quantita', 'costo', 'prezzo']
     
     if request.method=='POST': 
-        nome=request.form.get('nomePiatto')
         nuovo=request.form.get('nuovo')
         db=database.db()
 
@@ -310,7 +337,26 @@ def modifica(sel, idP, selCol, idE):
             elemento=database.visualizza_un_piatto(db, 'ingredienti', session['userId'], idE)
             nuovo=Calcoli.prezzoGrammi(float(elemento[6]), float(elemento[4]))
             database.modifica_elemento(db, session['userId'], idE, 'ingredienti', colonne[3], nuovo)
-            database.sommaCosti_ingredienti(db, 'ingredienti', idP, session['userId'])
+            database.sommaCosti_ingredienti(db, 'ingredienti', idP, session['userId'], None)
+            
+        elif sel==3:
+            database.modifica_elemento(db, session['userId'], idE, 'oggetti', colonne[selCol], nuovo)
+        
+        elif sel==4:
+            database.modifica_elemento(db, session['userId'], idE, 'oggetti', colonne[selCol], nuovo)
+            elemento=database.visualizza_un_piatto(db, 'oggetti', session['userId'], idE)
+            quanti=float(elemento[5])
+            nuovo=float(nuovo)
+            if udm=='grammi':
+                nuovo=Calcoli.prezzoGrammi(quanti, nuovo)
+            elif udm=='pezzi':
+                nuovo*=quanti
+            elif udm=='no':
+                return
+
+            database.modifica_elemento(db, session['userId'], idE, 'oggetti', 'costoQuantita', nuovo)
+            database.sommaCosti_ingredienti(db, 'oggetti', idP, session['userId'], idE)
+            
 
         #piatto.setNome(nome)    
         #da aggiungere modifica specifica ad un solo oggetto dell'array
@@ -389,7 +435,7 @@ def cancellaIngre():
 
     daSottrarre=int(idIngre[2])
     database.elimina_rigaPiatto(db, idIngre[0], 'ingredienti')
-    database.sommaCosti_ingredienti(db, 'ingredienti', daSottrarre, session['userId'])
+    database.sommaCosti_ingredienti(db, 'ingredienti', daSottrarre, session['userId'], None)
 
     db.close()
     return redirect(url_for('calcolaTot'))

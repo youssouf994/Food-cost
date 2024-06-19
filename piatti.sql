@@ -58,15 +58,12 @@ CREATE TABLE ingredienti
     prezzo DECIMAL (10, 4),
 	quantita DECIMAL (10, 4),
     costo DECIMAL(10, 3),
-    magazzinoId INTEGER,
     descrizione TEXT,
     unitaDiMisura TEXT,
     quanti DECIMAL(5,3),
     codice TEXT,
     famiglia TEXT,
-    sottoFamiglia TEXT,
     fornitore TEXT,
-    codFornitore TEXT,
     ordineMinimo INT
     /*
     tabella ingredienti salva i dati degli articoli food e beverage inseriti dall'utente', tutti gli articoli segnano
@@ -104,15 +101,12 @@ CREATE TABLE oggetti
     prezzo DECIMAL (10, 4),
 	quantita DECIMAL (10, 4),
     costoQuantita DECIMAL(10, 3),
-    magazzinoId INTEGER,
     descrizione TEXT,
     unitaDiMisura TEXT,
     quanti DECIMAL(5,3),
     codice TEXT,
     famiglia TEXT,
-    sottoFamiglia TEXT,
     fornitore TEXT,
-    codFornitore TEXT,
     ordineMinimo INT
     /*
     la tabella oggetti   sostanzialmente uguale a ingredienti solo che racchiude le attrezzature utilizzate dall'utente
