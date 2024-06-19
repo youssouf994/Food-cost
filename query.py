@@ -84,7 +84,7 @@ class database:
         return elemento
 
     @staticmethod
-    def elimina_rigaPiatto(db_ram, id, tabella):
+    def elimina_rigaPiatto(db_ram, idEle, tabella):
         """
         Funzione per eliminare una riga da una tabella del database.
 
@@ -100,17 +100,20 @@ class database:
             cursore = db_ram.cursor()
 
             if tabella == 'piatti':
-                cursore.execute(f"DELETE FROM {tabella} WHERE piattoId=?", (id,))
+                cursore.execute(f"DELETE FROM {tabella} WHERE piattoId=?", (idEle,))
                 db_ram.commit()
             elif tabella == 'ingredienti':
-                cursore.execute(f"DELETE FROM {tabella} WHERE ingredienteId=?", (id,))
+                cursore.execute(f"DELETE FROM {tabella} WHERE ingredienteId=?", (idEle,))
                 db_ram.commit()
                 cursore.close()
             elif tabella == 'ingredientiForzata':
                 tabella = 'ingredienti'
-                cursore.execute(f"DELETE FROM {tabella} WHERE idPiatto=?", (id,))
+                cursore.execute(f"DELETE FROM {tabella} WHERE idPiatto=?", (idEle,))
                 db_ram.commit()
                 cursore.close()
+            elif tabella=='oggetti':
+                cursore.execute(f"DELETE FROM {tabella} WHERE oggettoId=?", (idEle,))
+                db_ram.commit()
 
             return True
 

@@ -440,17 +440,24 @@ def cancellaPiatto():
     
     ritorna la funzione calcolaTot
 """
-@app.route('/cancellaXy', methods=['GET', 'POST'])
+@app.route('/cancellaXy/<int:strada>', methods=['GET', 'POST'])
 @login_required
-def cancellaIngre():
+def cancellaIngre(strada):
     nome=request.form.get('nomeI')
 
     db=database.db()
-    idIngre=database.idIngre(db, 'ingredienti', nome, session['userId'])
+    
+    if strada==0:
+        idIngre=database.idIngre(db, 'ingredienti', nome, session['userId'])
 
-    daSottrarre=int(idIngre[2])
-    database.elimina_rigaPiatto(db, idIngre[0], 'ingredienti')
-    database.sommaCosti_ingredienti(db, 'ingredienti', daSottrarre, session['userId'], None)
+        daSottrarre=int(idIngre[2])
+        database.elimina_rigaPiatto(db, idIngre[0], 'ingredienti')
+        database.sommaCosti_ingredienti(db, 'ingredienti', daSottrarre, session['userId'], None)
+    elif strada==1:
+        idOggetto=database.idIngre(db, 'oggetti', nome, session['userId'])
+        daSottrarre=idOggetto[6]
+        database.elimina_rigaPiatto(db, idOggetto[0], 'oggetti')
+        database.sommaCosti_ingredienti(db, 'oggetti', daSottrarre, session['userId'], idOggetto[0])
 
     db.close()
     return redirect(url_for('calcolaTot'))
