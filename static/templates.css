@@ -17,29 +17,22 @@
 
 
 .panoramicaPiatto {
-    display: flex;
-    flex-flow:row;
+    display: inline-block;
     padding:3%;
+    text-align:left;
     top:6%;
     gap:4%;
+
 }
 
 .inserimento {
-    display: grid;
-    margin: 2%;
-    grid-template-columns: repeat(2, 1fr); /* Tre colonne di larghezza flessibile */
-    gap: 4%;
+    display: flex;
+    width: 25%;
+    margin-left: 5%;
+    gap: 6%;
 }
 
-.inserimentoIngredienti
-{
-    
-}
 
-.inserimentoOggetti
-{
-    
-}
 
 .navLaterale {
     width: 12%;
@@ -63,12 +56,13 @@ navLaterale.a
 
 .container {
     margin-left: 12%;
-    padding: 2%;
+    padding: 4%;
     width: calc(100% - 12%);
     overflow-y: auto;
     height: 100%;
     margin-top: 5%;
     
+    justify-content:space-between;
 }
 
 
@@ -80,7 +74,8 @@ navLaterale.a
     grid-template-columns: repeat(5, 1fr); /* Tre colonne di larghezza flessibile */
     grid-template-rows: repeat(25%); /* Due righe con altezza fissa */
     gap: 4%; 
-    margin:4%;
+    margin:2%;
+    padding:2%;
 }
 
 .piattoSingolo
@@ -184,12 +179,22 @@ navLaterale.a
     flex-direction:row;
 }
 
+.titolo
+{
+    text-align:center;
+}
 
+.titolo h1
+{
+    margin: 0 auto;
+}
 /* Stili per il contenitore fondoForm */
 .fondoForm {
+    width:100%;
     position: relative;
     background-color: #ffffff;
-    padding: 2%;
+    
+    
     
 }
 
@@ -201,6 +206,8 @@ navLaterale.a
     box-shadow: 10px 15px 10px -10px #dedede; /* Effetto di sollevamento */
     -moz-box-shadow: 10px 15px 10px -10px #dedede;
     -webkit-box-shadow: 10px 15px 10px -10px #dedede;
+    margin:2%;
+    padding:2%;
 }
 
 /* Stili per gli input e i label */

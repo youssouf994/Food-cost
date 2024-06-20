@@ -45,22 +45,26 @@
     <div class="container">
         
         <div class="fondoForm">
-            <h1>Nome Piatto: {{piattiUtente[2]}}</h1>
-            <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+            <div class="titolo">
+                <h1>Nome Piatto: {{piattiUtente[2]}}</h1>
+                <input type="hidden" name="nomeP" value="{{piattiUtente[2]}}" />
+            </div>
 
             <div class="panoramicaPiatto">
                 <div class="panoramicaPiatto1">
+                    <p>Food Cost del piatto: {{ percentualeFoodCost }} %</p>
+                    <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
+
                     <form action="{{(url_for('visualizzaDashboardPiatto', idPiatto=piattiUtente[0]))}}" method="post">
                         <label for="prezzoAlimento">Prezzo di vendita</label>
-                        <input type="text" id="prezzoAlimento" name="prezzoVendita">
+                        <input type="text" id="prezzoAlimento" name="prezzoVendita"><br />
                         <input type="submit" value="Aggiungi prezzo">
                     </form>
 
                     <form action="{{(url_for('calcolaFoodCost', idPiatto=piattiUtente[0]))}}" method="post">
                         <input type="submit" value="Calcola Food Cost">
                     </form>
-                    <p>Food Cost del piatto: {{ percentualeFoodCost }} %</p>
-                    <p>Costo Totale del piatto: {{piattiUtente[3]}}</p>
+
                 </div>
 
                 <!--<div class="panoramicaPiatto1">
@@ -85,7 +89,7 @@
                         <input type="text" id="quantita" name="quantita">
                         <br>
 
-                        <input type="submit" value="aggiungi">
+                        <input type="submit" value="aggiungi ingrediente">
                         <input type="reset" value="resetta campi">
                     </form>
                 </div>
@@ -98,10 +102,10 @@
                         <br>
 
                         <label for="prezzoAlKg">Prezzo al Kg</label>
-                        <input type="radio" id="radioKg" name="prezzo" value="0">
+                        <input type="radio" id="radioKg" name="prezzo" value="0"><br />
 
                         <label for="prezzoAlPz">Prezzo al Pezzo</label>
-                        <input type="radio" id="radioPz" name="prezzo" value="1">
+                        <input type="radio" id="radioPz" name="prezzo" value="1"><br />
                         <input type="text" style="margin-left:2%;" id="nomeAlimento" name="prezzoOggetto">
                         <br>
 
@@ -109,7 +113,7 @@
                         <input type="text" id="quantita" name="quantita">
                         <br>
 
-                        <input type="submit" value="aggiungi">
+                        <input type="submit" value="aggiungi oggetto">
                         <input type="reset" value="resetta campi">
                     </form>
                 </div>
@@ -132,10 +136,10 @@
                                 <p>QUANTITA': <b>{{ingredientiUtente[6]}}</b> grammi<br>
                                 <p>
                                     COSTO: <b>{{ingredientiUtente[7]}}</b> €
-                                    <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
+                                           <button class="menuButton" data-target="#menuToolsIngredienti{{ 'ingredienti' ~ loop.index }}">Tools</button>
                                 </p>
 
-                                <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
+                                <div id="menuToolsIngredienti{{ 'ingredienti' ~ loop.index }}" class="menuToolsIngredienti" style="display:none;">
                                     <form action="{{(url_for('modifica', sel=2, idP=piattiUtente[0], selCol=0, idE=ingredientiUtente[0], udm='no'))}}" method="post">
                                         <label for="ingre">Nuovo Alimento</label>
                                         <input type="text" name="nuovo" />
@@ -184,10 +188,10 @@
                                 <p>QUANTITA': <b>{{ oggettiUtente[5] }}</b>{% if oggettiUtente[8] == 'pezzi' %} pezzi{% else %} grammi{% endif %}</p>
                                 <p>
                                     COSTO: <b>{{oggettiUtente[6]}}</b> €
-                                    <button class="menuButton" data-target="#menuToolsIngredienti{{ loop.index }}">Tools</button>
+                                           <button class="menuButton" data-target="#menuToolsIngredienti{{ 'oggetti' ~ loop.index }}">Tools</button>
                                 </p>
 
-                                <div id="menuToolsIngredienti{{ loop.index }}" class="menuToolsIngredienti" style="display:none ;">
+                                <div id="menuToolsIngredienti{{ 'oggetti' ~ loop.index }}" class="menuToolsIngredienti" style="display:none;">
                                     <form action="{{(url_for('modifica', sel=3, idP=piattiUtente[0], selCol=0, idE=oggettiUtente[0], udm='no'))}}" method="post">
                                         <label for="ingre">Nuovo Alimento</label>
                                         <input type="text" name="nuovo" />
@@ -210,7 +214,7 @@
 
                                     <form action="{{(url_for('cancellaIngre', strada=1))}}" method="post">
                                         <input type="hidden" name="nomeI" value="{{oggettiUtente[3]}}" />
-                                        <input type="submit" value="Cancella Ingrediente" />
+                                        <input type="submit" value="Cancella Oggetto" />
                                     </form>
                                 </div>
                             </div>

@@ -45,7 +45,7 @@
     </nav>
 
     <div class="container">
-        <div class="fondoFor">
+        <div class="fondoForm">
             <h1>Nuovo piatto</h1>
             <form action="{{('/nuovoPiatto')}}" method="post">
                 <label for="nomePiatto">Inserisci nuovo piatto</label>
@@ -56,9 +56,9 @@
             <p>percentuale costi gestione</p>
         </div>
 
-        <h1>Piatti salvati</h1>
+        
         <div class="fondoForm">
-
+            <h1>Piatti salvati</h1>
             {% for piatto in piattiUtente %}
             <div class="piatti">
                 <div class="infoIn">

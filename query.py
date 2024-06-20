@@ -114,6 +114,11 @@ class database:
             elif tabella=='oggetti':
                 cursore.execute(f"DELETE FROM {tabella} WHERE oggettoId=?", (idEle,))
                 db_ram.commit()
+            elif tabella == 'oggettiForzata':
+                tabella = 'oggetti'
+                cursore.execute(f"DELETE FROM {tabella} WHERE idPiatto=?", (idEle,))
+                db_ram.commit()
+                cursore.close()
 
             return True
 
@@ -353,11 +358,11 @@ class database:
             else:
                 idPiatto = None
 
-            return idPiatto
-
         except Exception as e:
             print("Si è verificato un errore:", e)
         
+        finally:
+            return idPiatto
 
     @staticmethod
     def idIngre(db, tabella, nome, id):
@@ -387,7 +392,40 @@ class database:
 
         except Exception as e:
             print("Si è verificato un errore:", e)
+            
+    @staticmethod
+    def sommaCosti(db, idP, idU):
+        try:
+            cursore = db.cursor()
+            
+            ingredienti=database.visualizza_tutti_piatti(db, 'ingredienti', idU)
+            oggetti=database.visualizza_tutti_piatti(db, 'oggetti', idU)
 
+            tot=0
+            for i in ingredienti:
+                if i[2]==idP:
+                    tot+=i[7]
+                
+            totParziale=tot
+            
+            tot=0
+            for o in oggetti:
+                if o[2]==idP:
+                    tot+=o[6]
+            
+            tot+=totParziale
+            tot=float(tot)
+            
+            cursore.execute('UPDATE piatti SET costo=? WHERE piattoId=?', (tot, idP))
+            db.commit()
+            
+        except Exception as e:
+            print("Si è verificato un errore:", e)
+            return tot
+        
+        finally:
+            return True
+            
     @staticmethod
     def sommaCosti_ingredienti(db, tabella, idPiatto, idUte, idOggetto):
         """
@@ -405,9 +443,11 @@ class database:
         Returns:
             float: Totale dei costi degli ingredienti arrotondato a 3 decimali.
         """
+        
         try:
+            cursore = db.cursor()
+            
             if tabella=='ingredienti':
-                cursore = db.cursor()
                 cursore.execute(f"SELECT * FROM {tabella} WHERE idPiatto=? AND idUtente=?", (idPiatto, idUte))
                 risultati = cursore.fetchall()
             
@@ -418,7 +458,6 @@ class database:
                     totArrotondato=round(tot, 3)
 
             elif tabella=='oggetti':
-                cursore = db.cursor()
                 cursore.execute(f"SELECT * FROM {tabella} WHERE oggettoId=? AND idUtente=?", (idOggetto, idUte))
                 risultati = cursore.fetchall()
             

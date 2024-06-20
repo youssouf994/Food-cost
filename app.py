@@ -161,7 +161,7 @@ def calcolaFoodCost(idPiatto):
         piattiUtente=database.visualizza_un_piatto(db, 'piatti', session['userId'], idPiatto)
         
         prezzo=piattiUtente[4]
-        sommaCostoIngredienti=database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto, session['userId'], None)
+        sommaCostoIngredienti=database.sommaCosti(db, idPiatto, session['userId'])
         
         if (prezzo==0) or (sommaCostoIngredienti==0):
             percentualeFoodCost=0
@@ -250,8 +250,7 @@ def aggiungiIngre(strada):
     
                 database.aggiungi_ingrediente(db, 'ingredienti', session['userId'], idPiatto[0], ingrediente, prezzoKg, quanti, prezzo, None)
     
-
-                database.sommaCosti_ingredienti(db, 'ingredienti', idPiatto[0], session['userId'], None)
+                database.sommaCosti(db, idPiatto[0], session['userId'])
                 
   
                 #piattiUtente=database.visualizza_tutti_piatti(db, 'piatti', session['userId'])
@@ -284,16 +283,17 @@ def aggiungiIngre(strada):
     
             database.aggiungi_ingrediente(db, 'oggetti', session['userId'], idPiatto[0], nomeOggetto, costoOggetto, quanti, prezzo, udm)
             
-            idOggetto=database.idPiatto(db, 'oggetti', nomeOggetto, session['userId'])
-            database.sommaCosti_ingredienti(db, 'oggetti', idPiatto[0], session['userId'], idOggetto[0])
+            #idOggetto=database.idPiatto(db, 'oggetti', nomeOggetto, session['userId'])
+            database.sommaCosti(db, idPiatto[0], session['userId'])
         
 
     except  Exception as e:
         return render_template("errore.html", e=e)
     
     finally:
-        db.close()    
-        return redirect(url_for('calcolaTot'))
+        db.close()
+        idPiatto=int(idPiatto[0])
+        return redirect(url_for('visualizzaDashboardPiatto', idPiatto=idPiatto))
         #return render_template("calcolaPrezzo.html", piattiUtente=piattiUtente, tot2=tot2)
         
     
@@ -337,7 +337,7 @@ def modifica(sel, idP, selCol, idE, udm):
             elemento=database.visualizza_un_piatto(db, 'ingredienti', session['userId'], idE)
             nuovo=Calcoli.prezzoGrammi(float(elemento[6]), float(elemento[4]))
             database.modifica_elemento(db, session['userId'], idE, 'ingredienti', colonne[3], nuovo)
-            database.sommaCosti_ingredienti(db, 'ingredienti', idP, session['userId'], None)
+            database.sommaCosti(db, idP, session['userId'])
             
         elif sel==3:
             database.modifica_elemento(db, session['userId'], idE, 'oggetti', colonne[selCol], nuovo)
@@ -355,7 +355,7 @@ def modifica(sel, idP, selCol, idE, udm):
                 return
 
             database.modifica_elemento(db, session['userId'], idE, 'oggetti', 'costoQuantita', nuovo)
-            database.sommaCosti_ingredienti(db, 'oggetti', idP, session['userId'], idE)
+            database.sommaCosti(db, idP, session['userId'])
             
         elif sel==5:
             database.modifica_elemento(db, session['userId'], idE, 'oggetti', colonne[selCol], nuovo)
@@ -370,7 +370,7 @@ def modifica(sel, idP, selCol, idE, udm):
                 return
 
             database.modifica_elemento(db, session['userId'], idE, 'oggetti', 'costoQuantita', nuovo)
-            database.sommaCosti_ingredienti(db, 'oggetti', idP, session['userId'], idE)
+            database.sommaCosti(db, idP, session['userId'])
             
 
         #piatto.setNome(nome)    
@@ -416,6 +416,10 @@ def cancellaPiatto():
     for e in ingreElimina:
         if e[2] ==idPia[0]:
             database.elimina_rigaPiatto(db, idPia[0], 'ingredientiForzata')
+            
+    for e in oggetElimina:
+        if e[2] ==idPia[0]:
+            database.elimina_rigaPiatto(db, idPia[0], 'oggettiForzata')
 
     database.elimina_rigaPiatto(db, idPia[0], 'piatti')
     db.close()
@@ -449,15 +453,16 @@ def cancellaIngre(strada):
     
     if strada==0:
         idIngre=database.idIngre(db, 'ingredienti', nome, session['userId'])
-
-        daSottrarre=int(idIngre[2])
+        idP=idIngre[2]
+        
+        daSottrarre=int(idIngre[7])
         database.elimina_rigaPiatto(db, idIngre[0], 'ingredienti')
-        database.sommaCosti_ingredienti(db, 'ingredienti', daSottrarre, session['userId'], None)
+        database.sommaCosti(db, idP, session['userId'])
     elif strada==1:
         idOggetto=database.idIngre(db, 'oggetti', nome, session['userId'])
-        daSottrarre=idOggetto[6]
+        idP=idOggetto[2]
         database.elimina_rigaPiatto(db, idOggetto[0], 'oggetti')
-        database.sommaCosti_ingredienti(db, 'oggetti', daSottrarre, session['userId'], idOggetto[0])
+        database.sommaCosti(db, idP, session['userId'])
 
     db.close()
     return redirect(url_for('calcolaTot'))
